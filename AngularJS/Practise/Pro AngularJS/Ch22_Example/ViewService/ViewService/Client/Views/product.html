@@ -2,11 +2,42 @@
 <html ng-app="exampleApp">
 <head>
     <title>Products</title>
+    <style type="text/css">
+        .ngFade.ng-enter {
+            -webkit-transition: 0.1s linear all;
+            -moz-transition: 0.1s linear all;
+            -ms-transition: 0.1s linear all;
+            -o-transition: 0.1s linear all;
+            transition: 0.1s linear all;
+            -ms-opacity: 0;
+            opacity: 0;
+        }
+
+        .ngFade.ng-enter-active {
+            -ms-opacity: 1;
+            opacity: 1;
+        }
+
+        .ngFade.ng-leave {
+            -webkit-transition: 0.1s linear all;
+            -moz-transition: 0.1s linear all;
+            -ms-transition: 0.1s linear all;
+            -o-transition: 0.1s linear all;
+            transition: 0.1s linear all;
+            -ms-opacity: 1;
+            opacity: 1;
+        }
+
+        .ngFade.ng-leave-active {
+            -ms-opacity: 0;
+            opacity: 0;
+        }
+    </style>
 </head>
 <body ng-controller="defaultCtrl">
     <div class="panel panel-primary">
         <h3 class="panel-heading">Products</h3>
-        <div ng-view></div>
+        <div ng-view class="ngFade"></div>
     </div>
 </body>
 </html>

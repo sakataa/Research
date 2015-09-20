@@ -1,4 +1,4 @@
-﻿angular.module("exampleApp", ["ngResource", "ngRoute"])
+﻿angular.module("exampleApp", ["ngResource", "ngRoute", "ngAnimate"])
 .constant("baseUrl", "/api/product/")
 .constant("tableViewUrl", "/Client/Views/tableView.html")
 .constant("editorViewUrl", "/Client/Views/editorView.html")
