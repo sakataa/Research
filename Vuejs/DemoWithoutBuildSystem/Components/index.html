@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>VueJS - Components</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <Grid v-bind:data-grid="dataGrid" />
+        </div>
+    </div>
+
+    <script>
+        Vue.component('Cell', {
+            template: '<td>{{celldata}}</td>',
+            props: ["celldata"]
+        })
+        Vue.component('Row', {
+            template: `<tr>
+                            <Cell v-for="(celldata, index) in rowdata" :celldata="celldata" :key="index" />
+                        </tr>`,
+            props: ["rowdata"]
+        })
+        Vue.component('Grid', {
+            template: `<table>
+                            <Row v-for="(rowdata, index) in dataGrid" :rowdata="rowdata" :key="index" />
+                        </table>`,
+            props: ["dataGrid"]
+        })
+
+        new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    dataGrid: [{
+                        FirstName: "Walter",
+                        LastName: "Tran"
+                    }, {
+                        FirstName: "Alex",
+                        LastName: "Nguyen"
+                    }]
+                }
+            }
+        })
+
+    </script>
+</body>
+
+</html>

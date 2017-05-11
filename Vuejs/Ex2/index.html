@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>VueJS</title>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <h4>Basic</h4>
+      <p :title="title">{{ message }}</p>
+
+      <p v-if="canSee">
+        You can see me !
+      </p>
+
+      <ul v-for="item in todos">
+        <li>{{item.text | capitalize}}</li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Filter</h4>
+      <p>{{message | capitalize}}</p>
+    </div>
+
+    <div>
+      <h4>Event Handler</h4>
+      <input v-model="message" />
+      <button @click="reverse">Reverse Message</button>
+    </div>
+
+    <div>
+      <h4>Computed and Method</h4>
+      <p>Computed: {{reverseMessage}}</p>
+      <p>Computed: {{reverseMessage}}</p>
+      <p>Computed: {{reverseMessage}}</p>
+      <p>------------------------------------</p>
+      <p>Methods: {{reverseMessageMethod()}}</p>
+      <p>Methods: {{reverseMessageMethod()}}</p>
+      <p>Methods: {{reverseMessageMethod()}}</p>
+      <p>------------------------------------</p>
+      <h5>Computed Getter & Setter</h5>
+      <p>FirstName: {{firstName}}</p>
+      <p>LastName: {{lastName}}</p>
+      <p>FullName: {{fullName}}</p>
+    </div>
+
+    <div>
+      <h4>Component</h4>
+      <ul v-for="item of todos">
+        <todo-item :item="item" />
+      </ul>
+    </div>
+
+    <div>
+      <h4>Asynchronous method with watcher</h4>
+      <p>
+        Ask a yes/no question:
+        <input v-model="question">
+      </p>
+      <p>{{ answer | capitalize }}</p>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="index.js"></script>
+  <script src="dist/build.js"></script>
+</body>
+
+</html>

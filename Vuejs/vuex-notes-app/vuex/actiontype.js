@@ -1,0 +1,15 @@
+const ADD_NOTE = "ADD_NOTE"
+const EDIT_NOTE = "EDIT_NOTE"
+const DELETE_NOTE = "DELETE_NOTE"
+const TOGGLE_FAVORITE = "TOGGLE_FAVORITE"
+const SET_ACTIVE_NOTE = "SET_ACTIVE_NOTE"
+
+const actionType = {
+    ADD_NOTE,
+    EDIT_NOTE,
+    DELETE_NOTE,
+    TOGGLE_FAVORITE,
+    SET_ACTIVE_NOTE
+};
+
+export default actionType
