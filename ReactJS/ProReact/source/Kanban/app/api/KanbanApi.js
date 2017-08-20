@@ -37,6 +37,17 @@ class KanbanAPI {
             })
         })
     }
+
+    static persistCardDrag(cardId, status, index) {
+        return fetch(`${API_URL}/cards/${cardId}`, {
+            method: 'put',
+            headers: API_HEADERS,
+            body: JSON.stringify({
+                status,
+                row_order_position: index
+            })
+        })
+    }
 }
 
 export default KanbanAPI;

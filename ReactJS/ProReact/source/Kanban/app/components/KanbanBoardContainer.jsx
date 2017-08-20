@@ -7,14 +7,6 @@ import { Container } from 'flux/utils';
 import CardActionCreators from '../actions/CardActionCreators';
 import CardStore from '../stores/CardStore';
 
-// If you're running the server locally, the URL will be, by default, localhost:3000
-// Also, the local server doesn't need an authorization header.
-const API_URL = 'http://kanbanapi.pro-react.com';
-const API_HEADERS = {
-    'Content-Type': 'application/json',
-    Authorization: 'any-string-you-like1234' // The Authorization is not needed for local server
-};
-
 class KanbanBoardContainer extends Component {
     constructor() {
         super(...arguments);

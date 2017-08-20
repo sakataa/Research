@@ -14,7 +14,9 @@ class CheckList extends Component {
             (
                 <li className="checklist__task" key={task.id}>
                     <input type="checkbox" defaultChecked={task.done}
-                        onChange={TaskActionCreators.toggleTask.bind(null, this.props.cardId, task, taskIndex)} />
+                        onChange={
+                            TaskActionCreators.toggleTask.bind(null, this.props.cardId, task, taskIndex)
+                        } />
                     {task.name}
                     <a href="#" className="checklist__task--remove"
                         onClick={TaskActionCreators.deleteTask.bind(null, this.props.cardId, task, taskIndex)}></a>

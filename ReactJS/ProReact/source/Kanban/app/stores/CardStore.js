@@ -103,6 +103,47 @@ class CardStore extends ReduceStore {
                         }
                     }
                 });
+
+            case constants.TOGGLE_CARD_DETAILS:
+                cardIndex = this.getCardIndex(action.payload.cardId);
+
+                return update(this.getState(), {
+                    [cardIndex]: {
+                        showDetails: {
+                            $apply: currentValue => !currentValue
+                        }
+                    }
+                });
+            case constants.UPDATE_CARD_POSITION:
+                if (action.payload.cardId !== action.payload.afterId) {
+                    cardIndex = this.getCardIndex(action.payload.cardId);
+                    let card = this.getState()[cardIndex]
+                    let afterIndex = this.getCardIndex(action.payload.afterId);
+                    return update(this.getState(), {
+                        $splice: [
+                            [cardIndex, 1],
+                            [afterIndex, 0, card]
+                        ]
+                    });
+                }
+            case constants.UPDATE_CARD_STATUS:
+                cardIndex = this.getCardIndex(action.payload.cardId);
+                return update(this.getState(), {
+                    [cardIndex]: {
+                        status: {
+                            $set: action.payload.listId
+                        }
+                    }
+                });
+            case constants.PERSIST_CARD_DRAG_ERROR:
+                cardIndex = this.getCardIndex(action.payload.cardProps.id);
+                return update(this.getState(), {
+                    [cardIndex]: {
+                        status: {
+                            $set: action.payload.cardProps.status
+                        }
+                    }
+                });
             default:
                 return state;
         }

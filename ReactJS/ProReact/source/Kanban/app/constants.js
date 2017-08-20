@@ -4,6 +4,14 @@ export default {
     FETCH_CARDS_SUCCESS: 'fetch cards success',
     FETCH_CARDS_SUCCESS: 'fetch cards error',
 
+    TOGGLE_CARD_DETAILS: 'toggle card details',
+    UPDATE_CARD_STATUS: 'update card status',
+    UPDATE_CARD_POSITION: 'update card position',
+
+    PERSIST_CARD_DRAG: 'persist card drag',
+    PERSIST_CARD_DRAG_SUCCESS: 'persist card drag success',
+    PERSIST_CARD_DRAG_ERROR: 'persist card drag error',
+
     CREATE_TASK: 'create task',
     CREATE_TASK_SUCCESS: 'create task success',
     CREATE_TASK_ERROR: 'create task error',
