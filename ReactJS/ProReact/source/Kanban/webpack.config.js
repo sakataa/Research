@@ -1,8 +1,10 @@
 var path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './app.js',
+    entry: './app/app.js',
     output: {
         filename: 'app.js',
         path: path.resolve(__dirname, 'build')
@@ -13,21 +15,24 @@ module.exports = {
     module: {
         rules: [{
             test: /\.(js|jsx)$/,
-            use: 'babel-loader'
+            use: 'babel-loader',
+            exclude: /node_modules/
         }]
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new CleanWebpackPlugin(['build']),
+        new HtmlWebpackPlugin({
+            title: 'Development',
+            template: './index.html'
+        }),
+         new webpack.HotModuleReplacementPlugin()
     ],
     devServer: {
-        hot: true,
-        inline: true,
         port: 9000,
+        compress: true,
         noInfo: false,
         open: true,
-        openPage: "./",
-        watchOptions: { aggregateTimeout: 300, poll: 1000 }
+        contentBase: './'
     },
-    devtool: "source-map",
-    watch: true
+    devtool: "source-map"
 }

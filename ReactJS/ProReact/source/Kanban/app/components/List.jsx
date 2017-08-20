@@ -6,7 +6,6 @@ class List extends Component {
         let cards = this.props.cards.map((card) => {
             return <Card
                 key={card.id}
-                taskCallbacks={this.props.taskCallbacks}
                 {...card} />
         });
 
@@ -21,8 +20,7 @@ class List extends Component {
 
 List.PropTypes = {
     title: PropTypes.string.isRequired,
-    cards: PropTypes.arrayOf(PropTypes.object),
-    taskCallbacks: PropTypes.object
+    cards: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default List;
