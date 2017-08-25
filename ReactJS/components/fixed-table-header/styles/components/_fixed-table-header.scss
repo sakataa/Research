@@ -1,0 +1,85 @@
+﻿@import "../abstracts/variables";
+@import "table";
+$paddingRightContainer: 17px;
+
+.header-content,
+.body-content,
+.footer-content {
+    border: solid 1px $colorBorderTable;
+
+    .table {
+        border-right: 1px solid $colorBorderTable;
+
+        td {
+            &:first-child {
+                border-left: none;
+            }
+        }
+    }
+}
+
+.header-content,
+.footer-content {
+    padding-right: $paddingRightContainer;
+}
+
+.first-row {
+    height: auto;
+
+    td {
+        height: 0;
+        border: none !important;
+        padding: 0 !important;
+        line-height: 0;
+    }
+}
+
+.body-content {
+    overflow-y: auto;
+    overflow-x: auto;
+
+    &.hasScroll {
+        padding-right: 0;
+    }
+
+    tr:last-child {
+        td {
+            border-bottom: none;
+        }
+    }
+}
+
+.header-content {
+    border-bottom: none;
+
+    th {
+        border-top: none;
+
+        &:first-child {
+            border-left: none;
+        }
+    }
+}
+
+.footer-content {
+    border-top: none;
+
+    .table {
+        border-top: 2px solid #a7a1a1;
+        font-weight: bold;
+
+        .fixed-table- {
+            &total {
+                td {
+                    border-bottom: none;
+                }
+            }
+
+            &grant-total {
+                td {
+                    background: rgb(184, 195, 201);
+                }
+            }
+        }
+    }
+}
