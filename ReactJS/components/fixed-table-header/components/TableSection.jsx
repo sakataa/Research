@@ -4,19 +4,25 @@ import PropTypes from 'prop-types';
 class TableSection extends Component {
     constructor(props) {
         super(props);
-        this.containerStyle = {
-            width: props.autoWidth ? "100%" : props.width + 19
+        const containerWidth = props.autoWidth ? props.maxWidth : props.width + 19;
+        this.containerStyle = props.style ? { ...props.style, width: containerWidth } :
+                                            { width: containerWidth }
+
+        if (props.style) {
+            this.containerStyle
         }
 
         this.tableStyle = {
-            width: props.autoWidth ? "100%" : props.width
+            width: props.autoWidth ? props.maxWidth - 19 : props.width
         }
     }
 
     render() {
-        const { tableClass, width, autoWidth, ...rest } = this.props;
+        console.log(this.containerStyle);
+        const { tableClass, width, autoWidth, maxWidth, ...rest } = this.props;
+
         return (
-            <div style={this.containerStyle} {...rest}>
+            <div {...rest} style={this.containerStyle}>
                 <div className="table-wrapper">
                     <table style={this.tableStyle} className={tableClass}>
                         {this.props.children}

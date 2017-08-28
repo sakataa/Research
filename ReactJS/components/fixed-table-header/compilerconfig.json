@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "styles/components/_fixed-table-header.css",
+    "inputFile": "styles/components/_fixed-table-header.scss"
+  },
+  {
+    "outputFile": "styles/main.css",
+    "inputFile": "styles/main.scss"
+  }
+]

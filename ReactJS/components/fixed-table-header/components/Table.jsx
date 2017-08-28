@@ -20,6 +20,7 @@ class Table extends Component {
                     ...child.props,
                     autoWidth: this.props.autoWidth,
                     width: this.props.width,
+                    maxWidth: this.props.maxWidth,
                     children: [layoutRow, ...rows]
                 }
             };
