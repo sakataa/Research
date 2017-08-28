@@ -7,10 +7,19 @@ class RowLayout extends Component {
     }
 
     _getRowLayout() {
-        return this.props.columnLayout.map((cellWidth, index) => {
-            const width = Number(cellWidth) === NaN ? cellWidth : `${cellWidth}px`;
+        const { width, columnLayout, columnWidthSum } = this.props;
+        const lastIndex = columnLayout.length - 1;
 
-            return (<td key={`cellLayout${index}`} style={{ width: width }}></td>);
+        return columnLayout.map((cellWidth, index) => {
+            const changeWidthOfLastCell = columnWidthSum && index === lastIndex && width > columnWidthSum;
+            if (changeWidthOfLastCell) {
+                const lastCellWidth = cellWidth + (width - columnWidthSum);
+                return (<td key={`cellLayout${index}`} style={{ width: lastCellWidth }}></td>);
+            }
+
+            const otherCellWidth = isNaN(cellWidth) ? cellWidth : `${cellWidth}px`;
+
+            return (<td key={`cellLayout${index}`} style={{ width: otherCellWidth }}></td>);
         });
     }
 
@@ -24,7 +33,8 @@ class RowLayout extends Component {
 }
 
 RowLayout.propTypes = {
-    columnLayout: PropTypes.arrayOf(PropTypes.number, PropTypes.string).isRequired
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    columnLayout: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])).isRequired
 }
 
 export default RowLayout;

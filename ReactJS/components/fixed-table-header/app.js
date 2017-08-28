@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import FixedTable from './FixedTable';
 import FakeData from './fakeData';
 
-const columnLayout = [300, 70, 150, 150, 200, 200, 200];
+const columnLayout = [300, 70, 150, 150, 200, 200, 100];
+/* const columnLayout = ["20%", "10%", "10%", "10%", "10%", "10%", "30%"]; */
 const { Table, Header, Body, Footer, Row, Cell } = FixedTable;
 const { headers, data, totalData, grantTotal } = FakeData;
 
@@ -91,8 +92,8 @@ class App extends Component {
         return (
             <Table
                 maxWidth={containerWidth}
-                width={1270}
-                autoWidth={true}
+                width={800}
+                autoWidth={false}
                 columnLayout={columnLayout}
                 {...this.props}>
 

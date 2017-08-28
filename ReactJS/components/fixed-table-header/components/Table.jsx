@@ -10,17 +10,29 @@ class Table extends Component {
         super(props);
     }
 
+    get columnWidthSum() {
+        const columnLayout = this.props.columnLayout;
+        return columnLayout.every(x => typeof x !== "string") ?
+            columnLayout.reduce((prev, next) => prev + next, 0) : null;
+    }
+
     _buildContent() {
+        const { width, columnLayout, autoWidth, maxWidth } = this.props;
+        const updatedWidth = this.columnWidthSum && this.columnWidthSum > width ? this.columnWidthSum : width;
+
         return React.Children.map(this.props.children, (child, index) => {
             let rows = React.Children.toArray(child.props.children);
-            const layoutRow = <RowLayout key={`rowLayout${index}`} columnLayout={this.props.columnLayout} />;
+            const layoutRow = <RowLayout key={`rowLayout${index}`}
+                width={updatedWidth}
+                columnWidthSum={this.columnWidthSum}
+                columnLayout={columnLayout} />;
 
             const newChild = {
                 props: {
                     ...child.props,
-                    autoWidth: this.props.autoWidth,
-                    width: this.props.width,
-                    maxWidth: this.props.maxWidth,
+                    autoWidth,
+                    width: updatedWidth,
+                    maxWidth,
                     children: [layoutRow, ...rows]
                 }
             };
@@ -39,9 +51,9 @@ class Table extends Component {
 }
 
 Table.propTypes = {
-    width: PropTypes.number,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     autoWidth: PropTypes.bool,
-    columnLayout: PropTypes.arrayOf(PropTypes.number, PropTypes.string).isRequired
+    columnLayout: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])).isRequired
 }
 
 Table.defaultProps = {
