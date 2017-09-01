@@ -1,0 +1,46 @@
+﻿.multiple-select {
+    &-label {
+        color: #000;
+        box-sizing: border-box;
+        display: flex;
+        width: 100%;
+        height: 31px;
+        padding: 6px 27px 6px 6px;
+        font-size: 14px;
+        text-align: left;
+        border-radius: 3px;
+        border: 1px solid #d3d4d4;
+        outline: 0;
+        cursor: pointer;
+        position: relative;
+
+        background: {
+            color: #fff;
+            image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="21px" height="21px" viewBox="0 0 21 21"><polygon points="10.5,12 7,8.5 14,8.5"/></svg>');
+            repeat: no-repeat;
+            position: calc(100% - 5px) center;
+        }
+    }
+
+    &-options {
+        width: 300px;
+        top: 0px;
+        left: 0px;
+        position: absolute;
+        transform: translateX(810px) translateY(55px) translateZ(0px);
+    }
+
+    &-item {
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        font-size: 14px;
+        text-indent: 4px;
+        border-radius: 2px;
+        user-select: none;
+
+        input[type=checkbox] + label {
+            cursor: pointer;
+        }
+    }
+}
