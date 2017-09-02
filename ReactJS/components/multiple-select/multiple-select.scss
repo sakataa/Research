@@ -1,15 +1,26 @@
-﻿.multiple-select {
+﻿$border: 1px solid #d3d4d4;
+$box-sizing: border-box;
+$border-radius: 3px;
+
+.multiple-select {
+    &-container {
+        position: relative;
+    }
+
+    &-default{
+        border: $border;
+        box-sizing: $box-sizing;
+        border-radius: $border-radius;
+        width: 100%;
+    }
+
     &-label {
         color: #000;
-        box-sizing: border-box;
         display: flex;
-        width: 100%;
         height: 31px;
         padding: 6px 27px 6px 6px;
         font-size: 14px;
         text-align: left;
-        border-radius: 3px;
-        border: 1px solid #d3d4d4;
         outline: 0;
         cursor: pointer;
         position: relative;
@@ -23,11 +34,12 @@
     }
 
     &-options {
-        width: 300px;
-        top: 0px;
+        margin: 0;
+        padding: 5px;
+        top: 30px;
         left: 0px;
         position: absolute;
-        transform: translateX(810px) translateY(55px) translateZ(0px);
+        background: #fff;
     }
 
     &-item {
@@ -36,7 +48,6 @@
         padding: 4px 8px;
         font-size: 14px;
         text-indent: 4px;
-        border-radius: 2px;
         user-select: none;
 
         input[type=checkbox] + label {

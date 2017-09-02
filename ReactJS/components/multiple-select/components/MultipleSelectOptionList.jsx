@@ -21,14 +21,6 @@ export default class MultipleSelectOptionList extends Component {
         onChange: PropTypes.func
     }
 
-    get selectedItemsKey() {
-        const { keyField, statusField } = this.props;
-
-        return this.props.dataSource.map(item => {
-            return item[statusField] ? item[keyField] : ""
-        })
-    }
-
     _renderOptionList() {
         const { dataSource, keyField, valueField, statusField, onChange } = this.props;
         const optionList = dataSource.map((item, index) => {
@@ -49,7 +41,7 @@ export default class MultipleSelectOptionList extends Component {
 
     render() {
         return (
-            <ul className="multiple-select-options">
+            <ul className="multiple-select-options multiple-select-default" style={{ display: this.props.show ? "block" : "none" }}>
                 {this._renderOptionList()}
             </ul>
         )

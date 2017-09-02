@@ -19,12 +19,14 @@ export default class Option extends Component {
         onChange: PropTypes.func
     }
 
-    onChange = (e) => {
+    onChange = (event) => {
+        event.stopPropagation();
         const { itemData, statusField, onChange } = this.props;
-        itemData[statusField] = !this.state.isChecked;
+        const newState = !this.state.isChecked;
+        itemData[statusField] = newState;
         onChange && onChange(itemData);
 
-        this.setState((prevState) => { return { isChecked: !prevState.isChecked } });
+        this.setState(() => { return { isChecked: newState } });
     }
 
     render() {

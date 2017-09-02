@@ -8,6 +8,10 @@ import MultipleSelectOptionList from './MultipleSelectOptionList'
 export default class MultipleSelect extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            showOptionList: false
+        }
     }
 
     static propTypes = {
@@ -23,6 +27,40 @@ export default class MultipleSelect extends Component {
         selectedItems: []
     }
 
+    onToggle = () => {
+        this.setState((prevState) => { return { showOptionList: !prevState.showOptionList } })
+    }
+
+    _close = () => {
+        this.setState((prevState) => { return { showOptionList: false } })
+    }
+
+    componentDidMount() {
+        this._lastActiveElement = document.activeElement
+        document.addEventListener('click', this._handleDocumentClick, true)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this._handleDocumentClick, true)
+    }
+
+    _handleDocumentClick = (e) => {
+        const node = ReactDOM.findDOMNode(this);
+        console.log(this)
+        console.log(node)
+        console.log(e.target)
+        console.log(this._lastActiveElement)
+
+        const clickOutside = node &&
+            node !== e.target &&
+            !node.contains(e.target) &&
+            this._lastActiveElement !== e.target;
+
+        if (clickOutside) {
+            this._close();
+        }
+    }
+
     render() {
         const {
             selectedItems,
@@ -34,15 +72,16 @@ export default class MultipleSelect extends Component {
         } = this.props;
 
         return (
-            <div className="react-multiple-select-container">
-                <MultipleSelectLabel />
+            <div className="multiple-select-container">
+                <MultipleSelectLabel onToggle={this.onToggle} />
 
-                <MultipleSelectOptionList
+                <MultipleSelectOptionList show={this.state.showOptionList}
                     dataSource={dataSource}
                     keyField={keyField}
                     valueField={valueField}
                     statusField={statusField}
-                    onChange={onChange} />
+                    onChange={onChange}
+                    blurHandler={this.blurHandler} />
             </div>
         )
     }

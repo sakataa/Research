@@ -1,14 +1,19 @@
-﻿.multiple-select-label {
-  color: #000;
+﻿.multiple-select-container {
+  position: relative; }
+
+.multiple-select-default {
+  border: 1px solid #d3d4d4;
   box-sizing: border-box;
+  border-radius: 3px;
+  width: 100%; }
+
+.multiple-select-label {
+  color: #000;
   display: flex;
-  width: 100%;
   height: 31px;
   padding: 6px 27px 6px 6px;
   font-size: 14px;
   text-align: left;
-  border-radius: 3px;
-  border: 1px solid #d3d4d4;
   outline: 0;
   cursor: pointer;
   position: relative;
@@ -18,11 +23,12 @@
   background-position: calc(100% - 5px) center; }
 
 .multiple-select-options {
-  width: 300px;
-  top: 0px;
+  margin: 0;
+  padding: 5px;
+  top: 30px;
   left: 0px;
   position: absolute;
-  transform: translateX(810px) translateY(55px) translateZ(0px); }
+  background: #fff; }
 
 .multiple-select-item {
   display: flex;
@@ -30,7 +36,6 @@
   padding: 4px 8px;
   font-size: 14px;
   text-indent: 4px;
-  border-radius: 2px;
   user-select: none; }
   .multiple-select-item input[type=checkbox] + label {
     cursor: pointer; }

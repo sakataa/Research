@@ -21,7 +21,8 @@ export default class MultipleSelectLabel extends Component {
 
     render() {
         return (
-            <button type="button" className="multiple-select-label">
+            <button type="button" className="multiple-select-label multiple-select-default"
+                onClick={this.props.onToggle}>
                 <span>{this.selectedItemsString}</span>
                 <b className="caret"></b>
             </button>
