@@ -21,6 +21,10 @@ export default class MultipleSelectOptionList extends Component {
         onChange: PropTypes.func
     }
 
+    changeHandler = (item) => {
+        
+    }
+
     _renderOptionList() {
         const { dataSource, keyField, valueField, statusField, onChange } = this.props;
         const optionList = dataSource.map((item, index) => {
