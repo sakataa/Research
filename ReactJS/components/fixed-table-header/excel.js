@@ -1,6 +1,6 @@
 function isIE() {
     var userAgent = window.navigator.userAgent;
-    return userAgent.indexOf("MSIE ") !== -1 ||  !!(userAgent.match(/Trident/)); 
+    return userAgent.indexOf("MSIE ") !== -1 || !!(userAgent.match(/Trident/));
 }
 
 function exportExcel() {
@@ -30,20 +30,31 @@ function exportExcel() {
     var headerStyle = "<th style='border:1px solid #cccccc; background:#4C6375; color:#ffffff;'";
 
     var headerHtml = "<thead>" + header.join("").replace(/<th/g, headerStyle) + "</thead>";
-    var bodyHtml = "<tbody>" + body.join("").replace(/<td/g, "<td style='border: 1px solid #ccc'") + "</tbody>";
-    var footerHtml = "<tfoot>" + footer.join("").replace(/<td/g, "<td style='border: 1px solid #ccc'") + "</tfoot>";
+    var bodyHtml = body.join("").replace(/<td/g, "<td style='border: 1px solid #ccc'");
+    var footerHtml = footer.join("").replace(/<td/g, "<td style='border: 1px solid #ccc'");
+
+    var mainContentHtml = "<tbody>" + bodyHtml + footerHtml + "</tbody>";
 
     var html = "<table style='border: 1px solid #ccc; width: 100%'>" + headerHtml + bodyHtml + footerHtml + "</table>";
     /* console.log(headerHtml); */
 
+    var blob = new Blob([html], {
+        type: "application/octet-stream"
+    });
+    var fileName = "jsexport.xls";
+
     if (isIE()) {
         if (window.navigator.msSaveBlob) {
-            var blob = new Blob([html], {
-                type: "text/html"
-            });
-            navigator.msSaveBlob(blob, "jsexport.xls");
+            navigator.msSaveBlob(blob, fileName);
         }
     } else {
-        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = fileName;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+
+        //window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
     }
 }
