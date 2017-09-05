@@ -6,20 +6,17 @@ class RowLayout extends Component {
         super(props)
     }
 
+    static propTypes = {
+        columnLayout: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])).isRequired
+    }
+
     _getRowLayout() {
-        const { width, columnLayout, columnWidthSum } = this.props;
-        const lastIndex = columnLayout.length - 1;
+        const { columnLayout } = this.props;
 
         return columnLayout.map((cellWidth, index) => {
-            const changeWidthOfLastCell = columnWidthSum && index === lastIndex && width > columnWidthSum;
-            if (changeWidthOfLastCell) {
-                const lastCellWidth = cellWidth + (width - columnWidthSum);
-                return (<td key={`cellLayout${index}`} style={{ width: lastCellWidth }}></td>);
-            }
+            const width = isNaN(cellWidth) ? cellWidth : `${cellWidth}px`;
 
-            const otherCellWidth = isNaN(cellWidth) ? cellWidth : `${cellWidth}px`;
-
-            return (<td key={`cellLayout${index}`} style={{ width: otherCellWidth }}></td>);
+            return (<td key={`cellLayout${index}`} style={{ width: width }}></td>);
         });
     }
 
@@ -30,11 +27,6 @@ class RowLayout extends Component {
             </tr>
         );
     }
-}
-
-RowLayout.propTypes = {
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    columnLayout: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])).isRequired
 }
 
 export default RowLayout;

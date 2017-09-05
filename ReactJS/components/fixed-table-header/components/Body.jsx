@@ -11,6 +11,14 @@ class Body extends Component {
         }
     }
 
+    static propTypes = {
+        maxHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    }
+
+    static defaultProps = {
+        maxHeight: "100%"
+    }
+
     render() {
         const { maxHeight, ...rest } = this.props;
         return (
@@ -21,14 +29,6 @@ class Body extends Component {
             </TableSection>
         );
     }
-}
-
-Body.propTypes = {
-    tableClass: PropTypes.string
-}
-
-Body.defaultProps = {
-    tableClass: "table"
 }
 
 export default Body;
