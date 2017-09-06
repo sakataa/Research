@@ -9,25 +9,20 @@ class App extends Component {
         this.state = {
             dataSource: [
                 { Name: "SB", Value: "Sportsbook", Status: true },
-                { Name: "BA", Value: "BA", Status: true },
+                { Name: "BA", Value: "BA", Status: false },
                 { Name: "RC", Value: "Racing", Status: false }
-            ]
+            ],
+            selectedItems: ""
         }
     }
 
-    get selectedItems() {
-        const selectedItemList = this.state.dataSource.filter(x => x.Status);
-
-        return selectedItemList.map(x => { return x.Name }).join(",");
-    }
-
     onChange = (item, selectedItems) => {
-        console.log("Onchange: ", item);
-        console.log("SelectedItems: ", selectedItems);
+        this.setState({ selectedItems: selectedItems });
     }
 
     onClick = () => {
-        console.log(this.selectedItems);
+        console.log(this.state.dataSource);
+        console.log(this.state.selectedItems);
     }
 
     render() {

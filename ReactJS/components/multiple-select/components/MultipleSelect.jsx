@@ -28,9 +28,9 @@ export default class MultipleSelect extends Component {
     }
 
     get dataSource() {
-        const { keyField, valueField, statusField, dataSource } = this.props;
+        const { keyField, valueField, statusField } = this.props;
 
-        return dataSource.map(item => {
+        return this.state.dataSource.map(item => {
             return {
                 [KEY_NAME]: item[keyField],
                 [VALUE_NAME]: item[valueField],
@@ -43,8 +43,46 @@ export default class MultipleSelect extends Component {
         return this.dataSource.filter(item => item.status);
     }
 
+    onChangeHandler = (item) => {
+        const { keyField, valueField, statusField, onChange } = this.props;
+
+        const selectedItem = {
+            [keyField]: item.key,
+            [valueField]: item.value,
+            [statusField]: item.status
+        }
+
+        const newState = this.state.dataSource.map(x => {
+            return {
+                [keyField]: x[keyField],
+                [valueField]: x[valueField],
+                [statusField]: x[keyField] === item.key ? item.status : x[statusField]
+            }
+        });
+
+        const selectedItemString = this._getSelectedItemKey(newState);
+        onChange && onChange(selectedItem, selectedItemString);
+
+        this.setState(Object.assign({}, { dataSource: newState }));
+    }
+
     onToggle = () => {
         this.setState((prevState) => { return { showOptionList: !prevState.showOptionList } })
+    }
+
+    _getSelectedItemKey(dataSource) {
+        const { keyField, statusField } = this.props;
+        const selectedItemKey = [];
+
+        for (let i = 0; i < dataSource.length; i++) {
+            const item = dataSource[i];
+
+            if (item[statusField]) {
+                selectedItemKey.push(item[keyField])
+            }
+        }
+
+        return selectedItemKey.join(",");
     }
 
     _close = () => {
@@ -71,19 +109,6 @@ export default class MultipleSelect extends Component {
         if (clickOutside) {
             this._close();
         }
-    }
-
-    onChangeHandler = (item) => {
-        const { keyField, statusField, onChange } = this.props;
-
-        const newState = this.state.dataSource.slice();
-        const selectedItem = newState.find(x => x[keyField] === item.key);
-        selectedItem[statusField] = item.status;        
-
-        const selectedItemString = this.selectedItems.map(item => item.key).join(",");
-        onChange && onChange(selectedItem, selectedItemString);
-
-        this.setState(Object.assign({}, { dataSource: newState }));
     }
 
     render() {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-const NONE_SELECTED_LABEL = "Select options";
+const NO_SELECTED_LABEL = "Select options";
 const MAX_SELECTED_ITEM_FOR_DISPLAY = 3;
 
 export default class MultipleSelectLabel extends Component {
@@ -20,7 +20,7 @@ export default class MultipleSelectLabel extends Component {
     }
 
     static defaultProps = {
-        noneSelectedLabel: NONE_SELECTED_LABEL
+        noneSelectedLabel: NO_SELECTED_LABEL
     }
 
     get selectedItemsString() {
