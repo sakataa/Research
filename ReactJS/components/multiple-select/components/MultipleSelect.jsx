@@ -5,12 +5,17 @@ import PropTypes from 'prop-types';
 import MultipleSelectLabel from './MultipleSelectLabel'
 import MultipleSelectOptionList from './MultipleSelectOptionList'
 
+const KEY_NAME = "key";
+const VALUE_NAME = "value";
+const STATUS_NAME = "status";
+
 export default class MultipleSelect extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showOptionList: false
+            showOptionList: false,
+            dataSource: props.dataSource
         }
     }
 
@@ -19,12 +24,23 @@ export default class MultipleSelect extends Component {
         keyField: PropTypes.string.isRequired,
         valueField: PropTypes.string.isRequired,
         statusField: PropTypes.string.isRequired,
-        selectedItems: PropTypes.arrayOf(PropTypes.string),
         onChange: PropTypes.func
     }
 
-    static defaultProps = {
-        selectedItems: []
+    get dataSource() {
+        const { keyField, valueField, statusField, dataSource } = this.props;
+
+        return dataSource.map(item => {
+            return {
+                [KEY_NAME]: item[keyField],
+                [VALUE_NAME]: item[valueField],
+                [STATUS_NAME]: item[statusField]
+            }
+        })
+    }
+
+    get selectedItems() {
+        return this.dataSource.filter(item => item.status);
     }
 
     onToggle = () => {
@@ -46,10 +62,6 @@ export default class MultipleSelect extends Component {
 
     _handleDocumentClick = (e) => {
         const node = ReactDOM.findDOMNode(this);
-        console.log(this)
-        console.log(node)
-        console.log(e.target)
-        console.log(this._lastActiveElement)
 
         const clickOutside = node &&
             node !== e.target &&
@@ -61,27 +73,29 @@ export default class MultipleSelect extends Component {
         }
     }
 
+    onChangeHandler = (item) => {
+        const { keyField, statusField, onChange } = this.props;
+
+        const newState = this.state.dataSource.slice();
+        const selectedItem = newState.find(x => x[keyField] === item.key);
+        selectedItem[statusField] = item.status;        
+
+        const selectedItemString = this.selectedItems.map(item => item.key).join(",");
+        onChange && onChange(selectedItem, selectedItemString);
+
+        this.setState(Object.assign({}, { dataSource: newState }));
+    }
+
     render() {
-        const {
-            selectedItems,
-            dataSource,
-            keyField,
-            valueField,
-            statusField,
-            onChange
-        } = this.props;
+        const { dataSource, onChange } = this.props;
 
         return (
             <div className="multiple-select-container">
-                <MultipleSelectLabel onToggle={this.onToggle} />
+                <MultipleSelectLabel selectedItems={this.selectedItems} onToggle={this.onToggle} />
 
                 <MultipleSelectOptionList show={this.state.showOptionList}
-                    dataSource={dataSource}
-                    keyField={keyField}
-                    valueField={valueField}
-                    statusField={statusField}
-                    onChange={onChange}
-                    blurHandler={this.blurHandler} />
+                    dataSource={this.dataSource}
+                    onChange={this.onChangeHandler} />
             </div>
         )
     }

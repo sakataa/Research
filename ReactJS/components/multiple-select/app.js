@@ -21,14 +21,9 @@ class App extends Component {
         return selectedItemList.map(x => { return x.Name }).join(",");
     }
 
-    onChange = (item) => {
+    onChange = (item, selectedItems) => {
         console.log("Onchange: ", item);
-
-        const newState = this.state.dataSource.slice();
-        const selectedItem = newState.find(x => x.Name === item.Name);
-        selectedItem.Status = item.Status;
-
-        this.setState(Object.assign({}, { dataSource: newState }));
+        console.log("SelectedItems: ", selectedItems);
     }
 
     onClick = () => {

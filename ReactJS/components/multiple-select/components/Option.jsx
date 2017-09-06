@@ -7,29 +7,26 @@ export default class Option extends Component {
         super(props);
 
         this.state = {
-            isChecked: props.itemData[props.statusField]
+            isChecked: props.itemData.status
         }
     }
 
     static propTypes = {
         itemData: PropTypes.object.isRequired,
-        keyField: PropTypes.string.isRequired,
-        valueField: PropTypes.string.isRequired,
-        statusField: PropTypes.string.isRequired,
         onChange: PropTypes.func
     }
 
     onChange = () => {
-        const { itemData, statusField, onChange } = this.props;
+        const { itemData, onChange } = this.props;
         const newState = !this.state.isChecked;
-        itemData[statusField] = newState;
+        itemData.status = newState;
         onChange && onChange(itemData);
 
         this.setState(() => { return { isChecked: newState } });
     }
 
     render() {
-        const { itemData, valueField, id } = this.props;
+        const { itemData, id } = this.props;
 
         return (
             <li className="multiple-select-item">
@@ -41,7 +38,7 @@ export default class Option extends Component {
                     onChange={this.onChange}
                 />
                 <label className="option-label" htmlFor={id}>
-                    {itemData[valueField]}
+                    {itemData.value}
                 </label>
             </li>
         );
