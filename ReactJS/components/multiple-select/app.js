@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MultipleSelect from './components/index';
+import { dataSource } from './fakeData'
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            dataSource: [
-                { Name: "SB", Value: "Sportsbook", Status: true },
-                { Name: "BA", Value: "BA", Status: false },
-                { Name: "RC", Value: "Racing", Status: false }
-            ],
+            dataSource: dataSource,
             selectedItems: ""
         }
     }
@@ -28,11 +25,11 @@ class App extends Component {
     render() {
         console.log("Main Page is rendering")
         return (
-            <div>
+            <div className="main-container">
                 <MultipleSelect
                     dataSource={this.state.dataSource}
-                    keyField={"Name"}
-                    valueField={"Value"}
+                    keyField={"Code"}
+                    valueField={"Name"}
                     statusField={"Status"}
                     onChange={this.onChange} />
 
