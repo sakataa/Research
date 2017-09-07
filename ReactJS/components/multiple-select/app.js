@@ -16,8 +16,8 @@ class App extends Component {
         }
     }
 
-    onChange = (item, selectedItems) => {
-        this.setState({ selectedItems: selectedItems });
+    onChange = (item, selectedItemsKey) => {
+        this.setState({ selectedItems: selectedItemsKey });
     }
 
     onClick = () => {
@@ -26,7 +26,7 @@ class App extends Component {
     }
 
     render() {
-        console.log("Container rendered")
+        console.log("Main Page is rendering")
         return (
             <div>
                 <MultipleSelect

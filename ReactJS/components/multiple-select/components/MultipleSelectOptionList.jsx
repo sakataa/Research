@@ -31,7 +31,7 @@ export default class MultipleSelectOptionList extends Component {
 
     render() {
         return (
-            <ul className="multiple-select-options multiple-select-default" style={{ display: this.props.show ? "block" : "none" }}>
+            <ul className="multiple-select-default multiple-select-options" style={{ display: this.props.show ? "block" : "none" }}>
                 {this._renderOptionList()}
             </ul>
         )

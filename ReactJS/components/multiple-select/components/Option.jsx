@@ -7,7 +7,7 @@ export default class Option extends Component {
         super(props);
 
         this.state = {
-            isChecked: props.itemData.status
+            isChecked: props.itemData.checked
         }
     }
 
@@ -19,7 +19,7 @@ export default class Option extends Component {
     onChange = () => {
         const { itemData, onChange } = this.props;
         const newState = !this.state.isChecked;
-        itemData.status = newState;
+        itemData.checked = newState;
         onChange && onChange(itemData);
 
         this.setState(() => { return { isChecked: newState } });

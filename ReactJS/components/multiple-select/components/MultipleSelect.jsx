@@ -7,7 +7,7 @@ import MultipleSelectOptionList from './MultipleSelectOptionList'
 
 const KEY_NAME = "key";
 const VALUE_NAME = "value";
-const STATUS_NAME = "status";
+const STATUS_NAME = "checked";
 
 export default class MultipleSelect extends Component {
     constructor(props) {
@@ -15,22 +15,28 @@ export default class MultipleSelect extends Component {
 
         this.state = {
             showOptionList: false,
-            dataSource: props.dataSource
+            dataSource: this._convertDataSourceToState(props)
         }
     }
 
     static propTypes = {
         dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
-        keyField: PropTypes.string.isRequired,
-        valueField: PropTypes.string.isRequired,
-        statusField: PropTypes.string.isRequired,
+        keyField: PropTypes.string,
+        valueField: PropTypes.string,
+        statusField: PropTypes.string,
+        noneSelectedLabel: PropTypes.string,
+        maxDisplayItemCount: PropTypes.number,
         onChange: PropTypes.func
     }
 
-    get dataSource() {
-        const { keyField, valueField, statusField } = this.props;
+    static defaultProps = {
+        keyField: KEY_NAME,
+        valueField: VALUE_NAME,
+        statusField: STATUS_NAME
+    }
 
-        return this.state.dataSource.map(item => {
+    _convertDataSourceToState({ keyField, valueField, statusField, dataSource }) {
+        return dataSource.map(item => {
             return {
                 [KEY_NAME]: item[keyField],
                 [VALUE_NAME]: item[valueField],
@@ -40,7 +46,7 @@ export default class MultipleSelect extends Component {
     }
 
     get selectedItems() {
-        return this.dataSource.filter(item => item.status);
+        return this.state.dataSource.filter(item => item.checked);
     }
 
     onChangeHandler = (item) => {
@@ -49,21 +55,17 @@ export default class MultipleSelect extends Component {
         const selectedItem = {
             [keyField]: item.key,
             [valueField]: item.value,
-            [statusField]: item.status
+            [statusField]: item.checked
         }
 
-        const newState = this.state.dataSource.map(x => {
-            return {
-                [keyField]: x[keyField],
-                [valueField]: x[valueField],
-                [statusField]: x[keyField] === item.key ? item.status : x[statusField]
-            }
-        });
+        const newDataSource = this.state.dataSource.slice(0);
+        const itemToUpdate = newDataSource.find(x => x.key === item.key);
+        itemToUpdate.checked = item.checked;
 
-        const selectedItemString = this._getSelectedItemKey(newState);
-        onChange && onChange(selectedItem, selectedItemString);
+        const selectedItemsKey = this._getSelectedItemKey(newDataSource);
+        onChange && onChange(selectedItem, selectedItemsKey);
 
-        this.setState(Object.assign({}, { dataSource: newState }));
+        this.setState(Object.assign({}, { dataSource: newDataSource }));
     }
 
     onToggle = () => {
@@ -71,14 +73,13 @@ export default class MultipleSelect extends Component {
     }
 
     _getSelectedItemKey(dataSource) {
-        const { keyField, statusField } = this.props;
         const selectedItemKey = [];
 
         for (let i = 0; i < dataSource.length; i++) {
             const item = dataSource[i];
 
-            if (item[statusField]) {
-                selectedItemKey.push(item[keyField])
+            if (item.checked) {
+                selectedItemKey.push(item.key)
             }
         }
 
@@ -90,7 +91,6 @@ export default class MultipleSelect extends Component {
     }
 
     componentDidMount() {
-        this._lastActiveElement = document.activeElement
         document.addEventListener('click', this._handleDocumentClick, true)
     }
 
@@ -101,10 +101,7 @@ export default class MultipleSelect extends Component {
     _handleDocumentClick = (e) => {
         const node = ReactDOM.findDOMNode(this);
 
-        const clickOutside = node &&
-            node !== e.target &&
-            !node.contains(e.target) &&
-            this._lastActiveElement !== e.target;
+        const clickOutside = node && node !== e.target && !node.contains(e.target);
 
         if (clickOutside) {
             this._close();
@@ -112,14 +109,19 @@ export default class MultipleSelect extends Component {
     }
 
     render() {
-        const { dataSource, onChange } = this.props;
+        const { noneSelectedLabel, maxDisplayItemCount } = this.props;
 
         return (
             <div className="multiple-select-container">
-                <MultipleSelectLabel selectedItems={this.selectedItems} onToggle={this.onToggle} />
+                <MultipleSelectLabel
+                    selectedItems={this.selectedItems}
+                    onToggle={this.onToggle}
+                    noneSelectedLabel={noneSelectedLabel}
+                    maxDisplayItemCount={maxDisplayItemCount} />
 
-                <MultipleSelectOptionList show={this.state.showOptionList}
-                    dataSource={this.dataSource}
+                <MultipleSelectOptionList
+                    show={this.state.showOptionList}
+                    dataSource={this.state.dataSource}
                     onChange={this.onChangeHandler} />
             </div>
         )
