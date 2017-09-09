@@ -1,0 +1,14 @@
+﻿[
+  {
+    "outputFile": "basic/basic.css",
+    "inputFile": "basic/basic.scss"
+  },
+  {
+    "outputFile": "test/sassloop.css",
+    "inputFile": "test/sassloop.scss"
+  },
+  {
+    "outputFile": "grid/grid.css",
+    "inputFile": "grid/grid.scss"
+  }
+]

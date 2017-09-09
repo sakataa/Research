@@ -1,0 +1,38 @@
+﻿.main-container {
+    margin: auto;
+    position: relative;
+    padding: 0 15px;
+}
+
+.container{
+    margin: 15px 0;
+}
+
+.flex-container {
+    height: 500px;
+    background-color: cyan;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    .flex-item {
+        width: 300px;
+        background-color: burlywood;
+    }
+}
+
+.flex-container-justify-content {
+    height: 300px;
+    background-color: #d5e8d6;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: stretch;
+
+    .flex-item {
+        margin: 0 15px;
+        width: 100px;
+        background-color: #7577f3;
+    }
+}
