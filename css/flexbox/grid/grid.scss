@@ -1,51 +1,22 @@
-﻿$grid-columns: 12 !default;
-$grid-gutter-width: 30px !default;
+﻿@import "variables";
+@import "reset";
+@import "grid-mixin";
 
-$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px ) !default;
-
-// Minimum breakpoint width. Null for the smallest (first) breakpoint.
-//
-//    >> breakpoint-min(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
-//    576px
-@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
-    $min: map-get($breakpoints, $name);
-    @return if($min != 0, $min, null);
+.container-fluid {
+    @include make-container();
 }
 
-@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
-    @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+.row {
+    @include make-row();
 }
 
-// Media of at least the minimum breakpoint width. No query for the smallest breakpoint.
-// Makes the @content apply to the given breakpoint and wider.
-@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
-    $min: breakpoint-min($name, $breakpoints);
+@each $breakpoint in map-keys($breakpointList) {
+    $infix: breakpoint-infix($breakpoint, $breakpointList);
 
-    @if $min {
-        @media (min-width: $min) {
-            @content;
-        }
-    }
-    @else {
-        @content;
-    }
-}
-
-@mixin make-col($size, $columns: $grid-columns) {
-    flex: 0 0 percentage($size / $columns);
-    // Add a `max-width` to ensure content within each column does not blow out
-    // the width of the column. Applies to IE10+ and Firefox. Chrome and Safari
-    // do not appear to require this.
-    max-width: percentage($size / $columns);
-}
-
-@each $breakpoint in map-keys($grid-breakpoints) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-
-    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-        @for $i from 1 through $grid-columns {
+    @include media-breakpoint-up($breakpoint, $breakpointList) {
+        @for $i from 1 through $columnList {
             .col#{$infix}-#{$i} {
-                @include make-col($i, $grid-columns);
+                @include make-col($i, $columnList);
             }
         }
     }
