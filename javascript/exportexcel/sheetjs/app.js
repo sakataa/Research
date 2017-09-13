@@ -1,60 +1,5 @@
 ﻿var type = "xlsx";
 
-const data = [{
-    Id: 0,
-    Operator: "New York",
-    Currency: "USD",
-
-    Details: [{
-        Products: "All",
-        BetCount: 50,
-        Turnover: "100,000.00",
-        CustomerWinLoss: "10,000",
-        OperatorWinLoss: "-10,000"
-    },
-    {
-        Products: "Sportsbook",
-        BetCount: 25,
-        Turnover: "50,000.00",
-        CustomerWinLoss: "5,000",
-        OperatorWinLoss: "4950,000"
-    },
-    {
-        Products: "BA",
-        BetCount: 25,
-        Turnover: "50,000.00",
-        CustomerWinLoss: "5,000",
-        OperatorWinLoss: "50,000"
-    }
-    ]
-},
-{
-    Id: 1,
-    Operator: "India",
-    Currency: "THB",
-    Details: [{
-        Products: "All",
-        BetCount: 50,
-        Turnover: "100,000.00",
-        CustomerWinLoss: "10,000",
-        OperatorWinLoss: "-10,000"
-    }]
-},
-{
-    Id: 2,
-    Operator: "New York",
-    Currency: "USD",
-
-    Details: [{
-        Products: "All",
-        BetCount: 50,
-        Turnover: "100,000.00",
-        CustomerWinLoss: "10,000",
-        OperatorWinLoss: "-10,000"
-    }]
-}
-];
-
 function s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
@@ -71,9 +16,7 @@ function sheetToArrayBuffer(s) {
 
 function download(wbout, fname) {
     try {
-        console.log(wbout)
         var base64String = s2ab(wbout);
-        console.log(base64String);
         var blob = new Blob([base64String], { type: "application/octet-stream" });
 
         var elem = window.document.createElement('a');
@@ -126,12 +69,12 @@ function exportExcelManually() {
 function getWorkSheet() {
     return {
         "!ref": "A1:G7",
-        A1: { t: "s", v: "Subsidiary" },                    // <-- General format
-        B1: { t: "s", v: "Currency" },           // <-- Builtin format
-        C1: { t: "s", v: 10000, z: "#,##0.00" },  // <-- Custom format
-        A2: { t: "s", v: 20000 },                    // <-- General format
-        B2: { t: "s", v: 20000, z: "0%" },           // <-- Builtin format
-        C2: { t: "s", v: 20000, z: "#,##0.00" },  // <-- Custom format
+        A1: { t: "s", v: "Subsidiary" }, // <-- General format
+        B1: { t: "s", v: "Currency" }, // <-- Builtin format
+        C1: { t: "s", v: 10000, z: "#,##0.00" }, // <-- Custom format
+        A2: { t: "s", v: 20000 }, // <-- General format
+        B2: { t: "s", v: 20000, z: "0%" }, // <-- Builtin format
+        C2: { t: "s", v: 20000, z: "#,##0.00" }, // <-- Custom format
         "!merges": [
             { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } } /* A1:A2 */
         ]
@@ -142,7 +85,7 @@ function getWorkSheetHeader() {
     return {
         "!ref": "A1:G7",
         A1: { t: "s", v: "Subsidiary" },
-        B1: { t: "s", v: "Currency" },           
+        B1: { t: "s", v: "Currency" },
         C1: { t: "s", v: "Product" },
         C2: { t: "s", v: "SB" },
         D2: { t: "s", v: "BA" },
@@ -153,9 +96,6 @@ function getWorkSheetHeader() {
             { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }
         ]
     }
-}
-
-function exportExcelFromJsonData() {
 }
 
 function getWorkSheetFromJsonData() {
