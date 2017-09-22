@@ -12,6 +12,14 @@ function generatePlugins(environment) {
             root: process.cwd(),
             exclude: ['fonts', 'images', 'dev', 'pro']
         }),
+        new CleanWebpackPlugin([cssPagePath], {
+            root: process.cwd(),
+            exclude: ['betlist']
+        }),
+        new CleanWebpackPlugin([cssBetlistPath], {
+            root: process.cwd(),
+            exclude: ['images']
+        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: "common",
             filename: "www/js/build/" + environment + "/common.chunk.js",

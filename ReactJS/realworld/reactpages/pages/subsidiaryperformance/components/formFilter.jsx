@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import { ActionCreators } from '../actions/index.js'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
-import MultipleSelect from '../../../components/multiple-select/index'
-import { Calendar, DateRange } from 'lrfcomponents/date-range/index'
-import LangHelper from 'lrflib/langHelper'
-import ReportExcel from './reportExcel'
+import MultipleSelect from '../../../components/multiple-select'
+import { Calendar, DateRange } from '../../../components/date-range/index'
+import LangHelper from '../../../lib/langHelper'
+import ReportExcel from '../lib/reportExcel'
+import Site from '../../../lib/site'
+import service from '../lib/service'
 
 const RANGE_MONTH_CONSTRAINT = 3;
 
@@ -15,30 +17,52 @@ class FormFilter extends Component {
         super(props);
     }
 
-    submit = (e) => {
-        e.preventDefault();
-        if (!this.props.xsrfToken || !this.isValidModel) {
+    get isValidModel() {
+        const { selectedSubsidiary, selectedProduct } = this.props;
+        return selectedSubsidiary !== "" && selectedProduct !== "";
+    }
+
+    submit = (event) => {
+        event.preventDefault();
+        const params = this._getParams();
+        if (!params) {
             return;
         }
 
         this.props.toggleLoader(true);
+        this.props.getGridData(params);
+    }
 
-        const fromDate = this.props.dateRange.fromDate;
-        const toDate = this.props.dateRange.toDate;
+    exportExcel = (event) => {
+        event.preventDefault();
+        const { dateRange, selectedBaseCurrency } = this.props;
+        const params = this._getParams();
 
-        const params = {
+        this.props.exportExcel(params).then(response => {
+            const title = service.getReportTitle(dateRange, selectedBaseCurrency);
+            const excel = new ReportExcel(response.data, title);
+            excel.export();
+        });
+    }
+
+    _getParams() {
+        if (!this.props.xsrfToken || !this.isValidModel) {
+            return null;
+        }
+
+        const { fromDate, toDate } = this.props.dateRange;
+
+        return {
             xsrfToken: this.props.xsrfToken,
             data: {
                 BaseCurrency: this.props.selectedBaseCurrency,
                 SubsidiaryList: this.props.selectedSubsidiary,
                 ProductCodeList: this.props.selectedProduct,
                 ConvertAll: this.props.convertAll,
-                FromDate: typeof fromDate === "string" ? fromDate : fromDate.format("MM/DD/YYYY"),
-                ToDate: typeof toDate === "string" ? toDate : toDate.format("MM/DD/YYYY")
+                FromDate: Site.convertDateToString(fromDate),
+                ToDate: Site.convertDateToString(toDate)
             }
         }
-
-        this.props.fetchData(params);
     }
 
     productChangeHandler = (currentItem, selectedItemsKey) => {
@@ -49,31 +73,16 @@ class FormFilter extends Component {
         this.props.setSelectedSubsidiary(selectedItemsKey)
     }
 
-    applyDateRangeHandler = (date) => {
-        const { setValidDateRange, setDateRange } = this.props;
-        const range = date.endDate.clone().subtract(date.startDate.month(), "month");
+    applyDateRangeHandler = (date, isValidMonthRange = true) => {
+        const { setDateRange } = this.props;
 
-        if (range.month() > RANGE_MONTH_CONSTRAINT - 1) {
+        if (isValidMonthRange) {
+            setDateRange(date);
+        }
+        else {
             const message = LangHelper.getSingleResource("DateRangeExceedMsg").replace("{0}", RANGE_MONTH_CONSTRAINT);
             alert(message);
-            setValidDateRange(false);
-            return;
         }
-
-        setValidDateRange(true);
-        setDateRange(date);
-    }
-
-    get isValidModel() {
-        const { selectedSubsidiary, selectedProduct, isValidDateRange } = this.props;
-        return selectedSubsidiary !== "" && selectedProduct !== "" && isValidDateRange;
-    }
-
-    exportExcel = (event) => {
-        event.preventDefault();
-
-        const excel = new ReportExcel(this.props.gridData);
-        excel.export();
     }
 
     _renderSubsidiarySelectList() {
@@ -85,6 +94,8 @@ class FormFilter extends Component {
                 keyField={"ID"}
                 valueField={"Name"}
                 statusField={"Checked"}
+                optionAllLabel={LangHelper.getSingleResource("All")}
+                noneSelectedLabel={LangHelper.getSingleResource("SelectOptions")}
                 onChange={this.subsidiaryChangeHandler} />
         ) : null;
     }
@@ -98,6 +109,8 @@ class FormFilter extends Component {
                 keyField={"Code"}
                 valueField={"Name"}
                 statusField={"Status"}
+                optionAllLabel={LangHelper.getSingleResource("All")}
+                noneSelectedLabel={LangHelper.getSingleResource("SelectOptions")}
                 onChange={this.productChangeHandler} />
         ) : null;
     }
@@ -120,7 +133,8 @@ class FormFilter extends Component {
         return (
             <DateRange startDate={dateRange.fromDate} endDate={dateRange.toDate}
                 minDate={dateConstraint.minDate} maxDate={dateConstraint.maxDate}
-                onClickApplyButton={this.applyDateRangeHandler} />
+                limitedMonthRange={RANGE_MONTH_CONSTRAINT}
+                onChange={this.applyDateRangeHandler} />
         )
     }
 
@@ -184,7 +198,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(ActionCreators, dispatch);
 }
 function mapStateToProps(state) {
-    const { containerWidth, ...rest } = state;
+    const { gridData, ...rest } = state;
     return Object.assign({}, rest);
 };
 

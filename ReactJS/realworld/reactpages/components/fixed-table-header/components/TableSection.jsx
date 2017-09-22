@@ -2,24 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const SCROLLBAR_WIDTH = 19;
-const MAX_WIDTH = window.innerWidth - 30;
+const GUTTER = 15;
+const MAX_WIDTH = window.innerWidth - (GUTTER * 2);
 
 class TableSection extends Component {
     constructor(props) {
         super(props);
-
-        const containerWidth = props.autoWidth ? props.maxWidth : props.width + SCROLLBAR_WIDTH;
-        this.containerStyle = props.style ? { ...props.style, width: containerWidth } : { width: containerWidth };
-
-        this.tableStyle = {
-            width: props.autoWidth ? props.maxWidth - SCROLLBAR_WIDTH : props.width
-        }
     }
 
     static propTypes = {
         tableClass: PropTypes.string,
         width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         maxWidth: PropTypes.number,
+        minWidth: PropTypes.number,
         autoWidth: PropTypes.bool,
     };
 
@@ -30,8 +25,32 @@ class TableSection extends Component {
         autoWidth: true
     };
 
+    get containerWidth() {
+        const { autoWidth, maxWidth, width } = this.props;
+        return autoWidth ? maxWidth : width;
+    }
+
+    get containerStyle() {
+        const { minWidth } = this.props;
+
+        return {
+            ...this.props.style,
+            width: this.containerWidth,
+            minWidth
+        };
+    }
+
+    get tableStyle() {
+        const { minWidth } = this.props;
+        const tableWidth = Math.max(this.containerWidth, minWidth) - SCROLLBAR_WIDTH;
+
+        return {
+            width: tableWidth
+        }
+    }
+
     render() {
-        const { tableClass, width, autoWidth, maxWidth, ...rest } = this.props;
+        const { tableClass, width, autoWidth, maxWidth, minWidth, ...rest } = this.props;
 
         return (
             <div {...rest} style={this.containerStyle}>

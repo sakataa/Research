@@ -1,4 +1,4 @@
-﻿import * as XLSX from 'xlsx';
+﻿import * as XLSX from 'xlsx-style';
 
 //var type = "xlsx";
 //var bookType = "xlsx";
@@ -79,8 +79,9 @@ function download(wbout, fname) {
     document.body.removeChild(elem);
 }
 
-const type = "xls";
-const bookType = "biff2";
+const type = "xlsx";
+const bookType = "xlsx";
+
 function exportExcel() {
     const worksheet = getWorkSheet();
     const workbook = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
@@ -101,7 +102,7 @@ function getWorkSheet() {
         E1: { t: "s", v: "Turnover" },
 
         A2: { t: "s", v: "New York" },
-        B2: { t: "s", v: "EUR"},
+        B2: { t: "s", v: "EUR" },
         C2: { t: "s", v: "Sportsbook" },
         D2: { t: "n", v: 1500, z: "#,##0" },
         E2: { t: "n", v: 891237.55, z: "#,##0.00" },
@@ -116,17 +117,17 @@ function getWorkSheet() {
             { s: { r: 1, c: 1 }, e: { r: 2, c: 1 } } /* B1:B2 */
         ],
         "!cols": [{ wpx: 150 }, { wpx: 120 }, { wpx: 180 }, { wpx: 120 }, { wpx: 200 }],
-        "!rows": [{ hpx: 40 }]
+        "!rows": [{ hpx: 100 }]
     }
 }
 
-window.onload = function () {
+window.onload = function() {
     console.log("AAA");
     console.log(XLSX);
-    console.log(XLSX.utils.encode_cell({c: 1, r: 1}));
+    console.log(XLSX.utils.encode_cell({ c: 1, r: 1 }));
 
     const button = document.getElementById("btnExportExcel");
-    button.addEventListener("click", function () {
+    button.addEventListener("click", function() {
         exportExcel();
     })
 }

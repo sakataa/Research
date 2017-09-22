@@ -23,6 +23,9 @@ class DateRange extends Component {
     this.locale = { ...defaultOptions.locale, ...props.locale };
     this.ranges = { ...defaultOptions.ranges, ...props.ranges };
 
+    this.currentRange = { startDate, endDate };
+    this.isValid = true;
+
     this.state = {
       range: { startDate, endDate },
       link: linkedCalendars && endDate,
@@ -31,7 +34,7 @@ class DateRange extends Component {
   }
 
   get dateRangeText() {
-    const date = this.state.range;
+    const date = this.currentRange;
     if (date.startDate && date.endDate) {
       return `${date.startDate.format(MomentFormat.default)} - ${date.endDate.format(MomentFormat.default)}`;
     }
@@ -40,6 +43,7 @@ class DateRange extends Component {
   }
 
   show() {
+    this.step = 0;
     this.setState({ show: true });
   }
 
@@ -64,17 +68,30 @@ class DateRange extends Component {
     }
   }
 
-  setRange(range, source, triggerChange) {
+  setRange(range, triggerChange, show) {
     const { onChange } = this.props
     range = this.orderRange(range);
+    this.isValid = this.isValidMonthRange(range);
 
-    this.setState({ range }, () => triggerChange && onChange && onChange(range, source));
+    const callback = () => {
+      triggerChange && onChange && onChange(range, this.isValid);
+    }
+
+    if (this.isValid) {
+      const newState = show === undefined ? { range } : { range, show };
+      this.setState(newState, callback);
+    }
+    else {
+      onChange && onChange(range, this.isValid);
+    }
   }
 
-  handleSelect(date, source) {
-    if (date.startDate && date.endDate) {
+  handleSelect(date) {
+    if (date.startDate && date.endDate) { //Select in range
       this.step = 0;
-      return this.setRange(date, source, true);
+      const showDaterange = false, triggerChange = true;
+      this.currentRange = Object.assign({}, date);
+      return this.setRange(date, triggerChange, showDaterange);
     }
 
     const { startDate, endDate } = this.state.range;
@@ -98,10 +115,21 @@ class DateRange extends Component {
     }
 
     const triggerChange = !this.props.twoStepChange || this.step === 0 && this.props.twoStepChange;
-
-    this.setRange(range, source, triggerChange);
+    this.setRange(range, triggerChange);
   }
 
+  isValidMonthRange(date) {
+    const { limitedMonthRange } = this.props;
+
+    if (limitedMonthRange) {
+      const range = date.endDate.clone().subtract(date.startDate.month(), "month");
+      if (range.month() > limitedMonthRange - 1) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   handleLinkChange(newDate) {
     this.setState({
@@ -111,7 +139,10 @@ class DateRange extends Component {
 
   handleApply() {
     const { onClickApplyButton } = this.props;
-    onClickApplyButton && onClickApplyButton(this.state.range);
+    const range = this.state.range;
+    onClickApplyButton && onClickApplyButton(range, this.isValid);
+
+    this.currentRange = Object.assign({}, range);
     this.hide();
   }
 
@@ -125,10 +156,12 @@ class DateRange extends Component {
       const oldEndDate = this.props.endDate && parseInput(this.props.endDate, format, 'endOf');
 
       if (!startDate.isSame(oldStartDate) || !endDate.isSame(oldEndDate)) {
-        this.setRange({
+        const range = {
           startDate: startDate || oldStartDate,
           endDate: endDate || oldEndDate
-        });
+        };
+
+        this.setRange(range);
       }
     }
   }
@@ -253,7 +286,8 @@ DateRange.propTypes = {
   classNames: PropTypes.object,
   rangedCalendars: PropTypes.bool,
   onClickApplyButton: PropTypes.func,
-  showRange: PropTypes.bool
+  showRange: PropTypes.bool,
+  limitedMonthRange: PropTypes.number
 }
 
 export default DateRange;

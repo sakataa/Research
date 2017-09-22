@@ -20,11 +20,9 @@ module.exports = {
         }]
     },
     node: { fs: 'empty' },
-   /*  externals: [
-		{
-            './cptable': 'var cptable',
-            'xlsx': 'xlsx'
-		}
-	], */
+    externals: [{
+        './cptable': 'var cptable',
+        'xlsx': 'xlsx'
+    }],
     devtool: "source-map"
 };

@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Cell extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.header = props.header;
+    }
+
+    static propTypes = {
+        header: PropTypes.bool
+    }
+
+    static defaultProps = {
+        header: false
     }
 
     render() {
+        const { header, ...rest } = this.props;
         return (
-            <td {...this.props}>{this.props.children}</td>
+            this.header ? <th {...rest}>{this.props.children}</th> : <td {...rest}>{this.props.children}</td>
         );
     }
 }
