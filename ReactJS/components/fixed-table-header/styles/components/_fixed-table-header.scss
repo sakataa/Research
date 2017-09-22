@@ -1,6 +1,11 @@
 ﻿@import "../abstracts/variables";
+@import "../abstracts/mixins";
 @import "table";
 $paddingRightContainer: 17px;
+
+.table-container {
+    overflow-x: auto;
+}
 
 .header-content,
 .body-content,
@@ -16,6 +21,22 @@ $paddingRightContainer: 17px;
             }
         }
     }
+}
+
+.table {
+    th, td {
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 1px;
+    }
+}
+
+.header-content,
+.body-content,
+.footer-content,
+.table-wrapper {
+    position: relative;
 }
 
 .header-content,
@@ -37,6 +58,7 @@ $paddingRightContainer: 17px;
 .body-content {
     overflow-y: auto;
     overflow-x: auto;
+    border-top: none;
 
     &.hasScroll {
         padding-right: 0;
@@ -52,8 +74,9 @@ $paddingRightContainer: 17px;
 .header-content {
     border-bottom: none;
 
-    th {
-        border-top: none;
+    .table > thead > tr > th {
+        border: none;
+        border-left: 1px solid #fff;
 
         &:first-child {
             border-left: none;
@@ -65,7 +88,6 @@ $paddingRightContainer: 17px;
     border-top: none;
 
     .table {
-        border-top: 2px solid #a7a1a1;
         font-weight: bold;
 
         .fixed-table- {
