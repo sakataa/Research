@@ -22,13 +22,13 @@ class App extends Component {
     get header() {
         return (
             <Row style={{ height: 32 }}>
-                <Cell width={150} header={true}>Subsidiary</Cell>
-                <Cell width={150} header={true}>Currency</Cell>
-                <Cell width={200} header={true}>Product</Cell>
-                <Cell width={150} header={true}>BetCount</Cell>
-                <Cell width={200} header={true}>Turnover</Cell>
-                <Cell width={200} header={true}>Customer W/L</Cell>
-                <Cell width={200} header={true}>SubsidiaryWL/ Comm</Cell>
+                <Cell colWidth={150} header={true}>Subsidiary</Cell>
+                <Cell colWidth={150} header={true}>Currency</Cell>
+                <Cell colWidth={200} header={true}>Product</Cell>
+                <Cell header={true}>BetCount</Cell>
+                <Cell header={true}>Turnover</Cell>
+                <Cell header={true}>Customer W/L</Cell>
+                <Cell header={true}>SubsidiaryWL/ Comm</Cell>
             </Row>
         )
     }

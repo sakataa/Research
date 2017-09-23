@@ -10,6 +10,7 @@ import createTableSection from './createTableSection';
 
 const MAX_WIDTH = window.innerWidth - 30;
 const DEFAULT_MILLISECOND_FOR_WAITING = 500;
+const DEFAULT_COLUMN_WIDTH = 100;
 
 function debounce(func, wait) {
     let timeout;
@@ -57,9 +58,10 @@ class Table extends Component {
 
         React.Children.map(headerComponent.props.children, (row, index) => {
             React.Children.forEach(row.props.children, (cell) => {
-                const cellWidth = cell.props.width;
-                if (cellWidth) {
-                    columnsWidth.push(cellWidth)
+                const props = cell.props;
+                if(!props.colSpan){
+                    const cellWidth = props.colWidth ? props.colWidth : DEFAULT_COLUMN_WIDTH;
+                    columnsWidth.push(cellWidth);
                 }
             });
         });
@@ -102,10 +104,6 @@ class Table extends Component {
         return newColumnsWidth;
     }
 
-    get maxWidth() {
-        return this.state.maxWidth;
-    }
-
     _buildContent() {
         const { width, autoWidth, minWidth } = this.props;
         const maxWidth = this.state.maxWidth;
@@ -115,8 +113,9 @@ class Table extends Component {
             this.columnsWidth;
 
         return React.Children.map(this.props.children, (child, index) => {
-            const rows = child.props.children;
-            const rowLayout = <RowLayout key={`rowLayout${index}`} columnLayout={newColumnLayout} />;
+            const rows = React.Children.toArray(child.props.children);
+            const layoutRow = <RowLayout key={`rowLayout${index}`} columnLayout={newColumnLayout} />;
+
             const newChild = {
                 props: {
                     ...child.props,
@@ -124,7 +123,7 @@ class Table extends Component {
                     width,
                     maxWidth,
                     minWidth,
-                    children: child.type === Header ? rows : [rowLayout, ...rows]
+                    children: [layoutRow, ...rows]
                 }
             };
 
