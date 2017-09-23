@@ -1,20 +1,4 @@
-import React, { Component } from 'react';
-import TableSection from './TableSection';
+import createTableSection from './TableSection';
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <TableSection className="header-content" {...this.props}>
-                <thead>
-                    {this.props.children}
-                </thead>
-            </TableSection>
-        );
-    }
-}
-
-export default Header;
+const className = "header-content";
+export default createTableSection({ className, isHeader: true });

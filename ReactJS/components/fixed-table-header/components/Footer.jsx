@@ -1,21 +1,4 @@
-import React, { Component } from 'react';
-import TableSection from './TableSection';
+import createTableSection from './TableSection';
 
-class Footer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
-    render() {
-        return (
-            <TableSection className="footer-content" {...this.props}>
-                <tbody>
-                    {this.props.children}
-                </tbody>
-            </TableSection>
-        );
-    }
-}
-
-export default Footer;
+const className = "footer-content";
+export default createTableSection({ className });
