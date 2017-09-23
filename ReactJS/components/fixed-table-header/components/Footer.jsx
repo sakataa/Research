@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TableSection from './TableSection';
 
-class Body extends Component {
+class Footer extends Component {
     constructor(props) {
         super(props);
     }
@@ -18,4 +18,4 @@ class Body extends Component {
     }
 }
 
-export default Body;
+export default Footer;
