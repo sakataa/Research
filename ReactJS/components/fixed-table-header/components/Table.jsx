@@ -2,11 +2,16 @@ import React, { Component, Children } from 'react';
 import ReactDOM from 'react-dom';
 import RowLayout from './RowLayout';
 import PropTypes from 'prop-types';
-import Header from './Header';
-import Body from './Body';
-import Footer from './Footer';
+import createTableSection from './TableSection';
 
-import createTableSection from './createTableSection';
+const headerContainerProps = { className: "header-content", isHeader: true };
+const Header = createTableSection(headerContainerProps);
+
+const bodyContainerProps = { className: "body-content" };
+const Body = createTableSection(bodyContainerProps);
+
+const footerContainerProps = { className: "footer-content" };
+const Footer = createTableSection(footerContainerProps);
 
 const MAX_WIDTH = window.innerWidth - 30;
 const DEFAULT_MILLISECOND_FOR_WAITING = 500;
@@ -43,7 +48,11 @@ class Table extends Component {
         width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         maxWidth: PropTypes.number,
         minWidth: PropTypes.number,
-        autoWidth: PropTypes.bool
+        autoWidth: PropTypes.bool,
+        bodyHeight: PropTypes.number,
+        header: PropTypes.arrayOf(PropTypes.object),
+        body: PropTypes.arrayOf(PropTypes.object),
+        footer: PropTypes.arrayOf(PropTypes.object)
     }
 
     static defaultProps = {
@@ -53,13 +62,13 @@ class Table extends Component {
     }
 
     _getColumnsWidth(props) {
-        const headerComponent = props.children.find(x => x.type === Header);
+        const headerComponent = props.header;
         const columnsWidth = [];
 
-        React.Children.map(headerComponent.props.children, (row, index) => {
+        React.Children.map(headerComponent, (row, index) => {
             React.Children.forEach(row.props.children, (cell) => {
                 const props = cell.props;
-                if(!props.colSpan){
+                if (!props.colSpan) {
                     const cellWidth = props.colWidth ? props.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
                 }
@@ -104,38 +113,33 @@ class Table extends Component {
         return newColumnsWidth;
     }
 
-    _buildContent() {
-        const { width, autoWidth, minWidth } = this.props;
+    render() {
+        const { width, autoWidth, minWidth, bodyHeight, header, body, footer } = this.props;
         const maxWidth = this.state.maxWidth;
 
         const newColumnLayout = this.columnWidthSum && this.columnWidthSum !== width ?
             this._getUpdatedColumnLayout() :
             this.columnsWidth;
 
-        return React.Children.map(this.props.children, (child, index) => {
-            const rows = React.Children.toArray(child.props.children);
-            const layoutRow = <RowLayout key={`rowLayout${index}`} columnLayout={newColumnLayout} />;
+        const sectionProps = { width, autoWidth, minWidth, maxWidth };
+        const rowLayout = <RowLayout columnLayout={newColumnLayout} />;
 
-            const newChild = {
-                props: {
-                    ...child.props,
-                    autoWidth,
-                    width,
-                    maxWidth,
-                    minWidth,
-                    children: [layoutRow, ...rows]
-                }
-            };
-
-            return Object.assign({}, child, newChild);
-        });
-    }
-
-    render() {
-        const { maxWidth } = this.state;
         return (
             <div className="table-container" style={{ maxWidth }}>
-                {this._buildContent()}
+                <Header {...sectionProps}>
+                    {rowLayout}
+                    {header}
+                </Header>
+
+                <Body {...sectionProps} maxHeight={bodyHeight}>
+                    {rowLayout}
+                    {body}
+                </Body>
+
+                <Footer {...sectionProps}>
+                    {rowLayout}
+                    {footer}
+                </Footer>
             </div>
         )
     }

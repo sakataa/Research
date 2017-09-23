@@ -16,7 +16,7 @@ class Cell extends Component {
     }
 
     render() {
-        const { header, ...rest } = this.props;
+        const { header, colWidth, ...rest } = this.props;
         return (
             this.header ? <th {...rest}>{this.props.children}</th> : <td {...rest}>{this.props.children}</td>
         );

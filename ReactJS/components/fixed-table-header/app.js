@@ -3,7 +3,7 @@ import React, {
     Component
 } from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Header, Body, Footer, Row, Cell } from './FixedTable';
+import { Table, Row, Cell } from './FixedTable';
 import FakeData from './fakeData';
 import NumberFormat from './numberFormat';
 
@@ -20,8 +20,8 @@ class App extends Component {
     }
 
     get header() {
-        return (
-            <Row style={{ height: 32 }}>
+        return ([
+            <Row key={`headerRow0`} style={{ height: 32 }}>
                 <Cell colWidth={150} header={true}>Subsidiary</Cell>
                 <Cell colWidth={150} header={true}>Currency</Cell>
                 <Cell colWidth={200} header={true}>Product</Cell>
@@ -30,7 +30,7 @@ class App extends Component {
                 <Cell header={true}>Customer W/L</Cell>
                 <Cell header={true}>SubsidiaryWL/ Comm</Cell>
             </Row>
-        )
+        ])
     }
 
     get body() {
@@ -136,21 +136,12 @@ class App extends Component {
                 <Table
                     minWidth={600}
                     autoWidth={true}
-                    {...this.props}>
-
-                    <Header>
-                        {this.header}
-                    </Header>
-
-                    <Body maxHeight={300}>
-                        {this.body}
-                    </Body>
-
-                    <Footer>
-                        {this.footer}
-                        {this.grandTotal}
-                    </Footer>
-                </Table>
+                    bodyHeight={300}
+                    header={this.header}
+                    body={this.body}
+                    footer={this.footer}
+                    {...this.props} 
+                />
             </div>
         );
     }
