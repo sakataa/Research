@@ -20,17 +20,33 @@ class App extends Component {
     }
 
     get header() {
-        return ([
+        return [
             <Row key={`headerRow0`} style={{ height: 32 }}>
-                <Cell colWidth={150} header={true}>Subsidiary</Cell>
-                <Cell colWidth={150} header={true}>Currency</Cell>
-                <Cell colWidth={200} header={true}>Product</Cell>
-                <Cell header={true}>BetCount</Cell>
-                <Cell header={true}>Turnover</Cell>
-                <Cell header={true}>Customer W/L</Cell>
-                <Cell header={true}>SubsidiaryWL/ Comm</Cell>
+                <Cell colSpan="2" header={true}>Subsidiary</Cell>
+                <Cell colWidth={80} rowSpan="2" header={true}>Currency</Cell>
+                <Cell colSpan="3" header={true}>Product</Cell>
+                <Cell colWidth={150} rowSpan="2" header={true}>BetCount</Cell>
+                <Cell colWidth={150} rowSpan="2" header={true}>Turnover</Cell>
+                <Cell colSpan="2" header={true}>Customer W/L</Cell>
+                <Cell colSpan="3" header={true}>SubsidiaryWL/ Comm</Cell>
+            </Row>,
+
+            <Row key={`headerRow1`} >
+                <Cell colWidth={49} header={true}>Subsidiary</Cell>
+                <Cell colWidth={50} header={true}>Subsidiary</Cell>
+
+                <Cell colWidth={51} header={true}>SB00</Cell>
+                <Cell colWidth={52} header={true}>BA00</Cell>
+                <Cell colWidth={63} header={true}>RC00</Cell>
+
+                <Cell colWidth={54} header={true}>BA0011</Cell>
+                <Cell colWidth={65} header={true}>RC0011</Cell>
+
+                <Cell colWidth={56} header={true}>SB01</Cell>
+                <Cell colWidth={57} header={true}>BA01</Cell>
+                <Cell colWidth={68} header={true}>RC01</Cell>
             </Row>
-        ])
+        ]
     }
 
     get body() {
@@ -140,7 +156,6 @@ class App extends Component {
                     header={this.header}
                     body={this.body}
                     footer={this.footer}
-                    {...this.props} 
                 />
             </div>
         );

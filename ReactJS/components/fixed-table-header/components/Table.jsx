@@ -37,7 +37,7 @@ class Table extends Component {
         super(props);
 
         this.diffWidth = window.innerWidth - props.maxWidth;
-        this.columnsWidth = this._getColumnsWidth(props);
+        this.columnsWidth = this._getColumnsWidth();
 
         this.state = {
             maxWidth: props.maxWidth
@@ -50,7 +50,7 @@ class Table extends Component {
         minWidth: PropTypes.number,
         autoWidth: PropTypes.bool,
         bodyHeight: PropTypes.number,
-        header: PropTypes.arrayOf(PropTypes.object),
+        header: PropTypes.arrayOf(PropTypes.object).isRequired,
         body: PropTypes.arrayOf(PropTypes.object),
         footer: PropTypes.arrayOf(PropTypes.object)
     }
@@ -61,20 +61,48 @@ class Table extends Component {
         autoWidth: true
     }
 
-    _getColumnsWidth(props) {
-        const headerComponent = props.header;
+    _getColumnsWidth() {
+        const headerComponent = this.props.header;
+        const rows = React.Children.toArray(headerComponent);
         const columnsWidth = [];
 
-        React.Children.map(headerComponent, (row, index) => {
-            React.Children.forEach(row.props.children, (cell) => {
-                const props = cell.props;
-                if (!props.colSpan) {
-                    const cellWidth = props.colWidth ? props.colWidth : DEFAULT_COLUMN_WIDTH;
+        function getWidthByRowIndex(rowIndex, cellStart, cellEnd) {
+            console.log("----------------------");
+            console.log("RowIndex: ", rowIndex);
+            console.log("Start: ", cellStart);
+            console.log("End: ", cellEnd);
+            const row = rows[rowIndex];
+            const cells = row.props.children.filter((item, index) => {
+                if (index > cellEnd || index < cellStart) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            const cellWithColspan = cells.find(x => rowIndex > 0 && x.props.colSpan);
+            cellEnd = cellWithColspan ? cellEnd - 1 : cellEnd;
+
+            let currentCellIndex = 0;
+            for(let cell of cells){
+                const cellProps = cell.props;
+                const colspan = Number(cellProps.colSpan);
+
+                if (colspan && colspan > 1) {
+                    const endIndex = currentCellIndex + colspan - 1;
+                    getWidthByRowIndex(rowIndex + 1, currentCellIndex, endIndex);
+                    currentCellIndex = endIndex + 1;
+                }
+                else {
+                    const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
                 }
-            });
-        });
+            }
+        }
 
+        getWidthByRowIndex(0, 0, rows[0].props.children.length - 1);
+
+        console.log(columnsWidth);
         return columnsWidth;
     }
 
