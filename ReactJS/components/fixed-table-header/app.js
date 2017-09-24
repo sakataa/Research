@@ -23,28 +23,34 @@ class App extends Component {
         return [
             <Row key={`headerRow0`} style={{ height: 32 }}>
                 <Cell colSpan="2" header={true}>Subsidiary</Cell>
-                <Cell colWidth={80} rowSpan="2" header={true}>Currency</Cell>
+                <Cell colWidth={80} rowSpan="3" header={true}>Currency</Cell>
                 <Cell colSpan="3" header={true}>Product</Cell>
-                <Cell colWidth={150} rowSpan="2" header={true}>BetCount</Cell>
-                <Cell colWidth={150} rowSpan="2" header={true}>Turnover</Cell>
+                <Cell colWidth={150} rowSpan="3" header={true}>BetCount</Cell>
+                <Cell colWidth={150} rowSpan="3" header={true}>Turnover</Cell>
                 <Cell colSpan="2" header={true}>Customer W/L</Cell>
                 <Cell colSpan="3" header={true}>SubsidiaryWL/ Comm</Cell>
             </Row>,
 
             <Row key={`headerRow1`} >
-                <Cell colWidth={49} header={true}>Subsidiary</Cell>
-                <Cell colWidth={50} header={true}>Subsidiary</Cell>
+                <Cell rowSpan="2" colWidth={48} header={true}>Subsidiary</Cell>
+                <Cell rowSpan="2" colWidth={57} header={true}>Subsidiary</Cell>
 
-                <Cell colWidth={51} header={true}>SB00</Cell>
-                <Cell colWidth={52} header={true}>BA00</Cell>
-                <Cell colWidth={63} header={true}>RC00</Cell>
+                <Cell colSpan="2" header={true}>SB00</Cell>
+                <Cell rowSpan="2" colWidth={44} header={true}>BA00</Cell>
 
-                <Cell colWidth={54} header={true}>BA0011</Cell>
-                <Cell colWidth={65} header={true}>RC0011</Cell>
+                <Cell rowSpan="2" colWidth={43} header={true}>BA0011</Cell>
+                <Cell rowSpan="2" colWidth={42} header={true}>RC0011</Cell>
 
-                <Cell colWidth={56} header={true}>SB01</Cell>
-                <Cell colWidth={57} header={true}>BA01</Cell>
-                <Cell colWidth={68} header={true}>RC01</Cell>
+                <Cell colSpan="2" header={true}>SB01</Cell>
+                <Cell rowSpan="2" colWidth={39} header={true}>BA01</Cell>
+            </Row>,
+
+            <Row key={`headerRow2`} >
+                <Cell colWidth={46} header={true}>Subsidiary</Cell>
+                <Cell colWidth={45} header={true}>Subsidiary</Cell>
+
+                <Cell colWidth={41} header={true}>Subsidiary</Cell>
+                <Cell colWidth={40} header={true}>Subsidiary</Cell>
             </Row>
         ]
     }

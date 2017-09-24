@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import RowLayout from './RowLayout';
 import PropTypes from 'prop-types';
 import createTableSection from './TableSection';
+import Row from './Row';
+import Cell from './Cell';
 
 const headerContainerProps = { className: "header-content", isHeader: true };
 const Header = createTableSection(headerContainerProps);
@@ -62,52 +64,70 @@ class Table extends Component {
     }
 
     _getColumnsWidth() {
-        const headerComponent = this.props.header;
-        const rows = React.Children.toArray(headerComponent);
+        const headerRows = this.props.header;
+        if (headerRows.length === 0) {
+            return null;
+        }
+
         const columnsWidth = [];
 
-        function getWidthByRowIndex(rowIndex, cellStart, cellEnd) {
-            console.log("----------------------");
-            console.log("RowIndex: ", rowIndex);
-            console.log("Start: ", cellStart);
-            console.log("End: ", cellEnd);
-            const row = rows[rowIndex];
-            const cells = row.props.children.filter((item, index) => {
-                if (index > cellEnd || index < cellStart) {
-                    return false;
-                }
+        const getWidthByCells = (cells, currentRowIndex) => {
+            console.log("-------------------")
+            console.log("currentRowIndex: ", currentRowIndex)
 
-                return true;
-            });
-
-            const cellWithColspan = cells.find(x => rowIndex > 0 && x.props.colSpan);
-            cellEnd = cellWithColspan ? cellEnd - 1 : cellEnd;
-
-            let currentCellIndex = 0;
-            for(let cell of cells){
+            let fromCellIndex = 0;
+            for (let cell of cells) {              
                 const cellProps = cell.props;
                 const colspan = Number(cellProps.colSpan);
 
                 if (colspan && colspan > 1) {
-                    const endIndex = currentCellIndex + colspan - 1;
-                    getWidthByRowIndex(rowIndex + 1, currentCellIndex, endIndex);
-                    currentCellIndex = endIndex + 1;
+                    console.log("Processing colspan...")
+                    let toCellIndex = fromCellIndex + colspan;
+                    const nextRowIndex = currentRowIndex + 1;
+                    const nextRow = headerRows[nextRowIndex];
+                    const nextCells = nextRow.props.children;
+
+                    console.log("nextRowIndex: ", nextRowIndex)
+                    const colspanCells = this._getColspanCells(nextCells, fromCellIndex, toCellIndex - 1);
+
+                    fromCellIndex += colspanCells.length;
+                    getWidthByCells(colspanCells, nextRowIndex);                   
                 }
                 else {
                     const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
                 }
+
+                console.log("Current result: ", columnsWidth);
             }
         }
 
-        getWidthByRowIndex(0, 0, rows[0].props.children.length - 1);
+        const cellListOfFirstRow = headerRows[0].props.children, currentRowIndex = 0;
+        getWidthByCells(cellListOfFirstRow, currentRowIndex);
 
-        console.log(columnsWidth);
+
         return columnsWidth;
     }
 
+    _getColspanCells(cells, fromCellIndex, toCellIndex) {
+        console.log("fromCellIndex: ", fromCellIndex)
+        console.log("toCellIndex: ", toCellIndex)
+        const colspanCells = [];
+        for (let i = fromCellIndex; i <= toCellIndex; i++) {
+            console.log("i: ", i)
+            console.log("toCellIndex", toCellIndex)
+            const cell = cells[i];
+            if(cell.props.colSpan){
+                toCellIndex -= 1;
+            }
+            colspanCells.push(cells[i]);
+        }
+
+        return colspanCells;
+    }
+
     get columnWidthSum() {
-        return this.columnsWidth.find(x => typeof x !== "number") ?
+        return !this.columnsWidth || !this.columnsWidth.length || this.columnsWidth.find(x => typeof x !== "number") ?
             null : this.columnsWidth.reduce((prev, current) => prev + current, 0);
     }
 
@@ -149,6 +169,10 @@ class Table extends Component {
             this._getUpdatedColumnLayout() :
             this.columnsWidth;
 
+        if (!newColumnLayout) {
+            return null;
+        }
+
         const sectionProps = { width, autoWidth, minWidth, maxWidth };
         const rowLayout = <RowLayout columnLayout={newColumnLayout} />;
 
@@ -159,15 +183,21 @@ class Table extends Component {
                     {header}
                 </Header>
 
-                <Body {...sectionProps} maxHeight={bodyHeight}>
-                    {rowLayout}
-                    {body}
-                </Body>
+                {
+                    body &&
+                    <Body {...sectionProps} maxHeight={bodyHeight}>
+                        {rowLayout}
+                        {body}
+                    </Body>
+                }
 
-                <Footer {...sectionProps}>
-                    {rowLayout}
-                    {footer}
-                </Footer>
+                {
+                    footer &&
+                    <Footer {...sectionProps}>
+                        {rowLayout}
+                        {footer}
+                    </Footer>
+                }
             </div>
         )
     }
