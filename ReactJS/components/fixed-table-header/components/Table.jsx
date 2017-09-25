@@ -100,6 +100,7 @@ class Table extends Component {
         const cellList = Array.isArray(headerRows) ? headerRows[currentRowIndex].props.children : headerRows.props.children;
         getWidthByCells(cellList, currentRowIndex);
 
+        console.log(columnsWidth)
         return columnsWidth;
     }
 
