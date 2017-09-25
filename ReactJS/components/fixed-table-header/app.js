@@ -46,11 +46,11 @@ class App extends Component {
             </Row>,
 
             <Row key={`headerRow2`} >
-                <Cell colWidth={46} header={true}>Subsidiary</Cell>
-                <Cell colWidth={45} header={true}>Subsidiary</Cell>
+                <Cell colWidth={46} header={true}>Subsidiary100</Cell>
+                <Cell colWidth={45} header={true}>Subsidiary101</Cell>
 
-                <Cell colWidth={41} header={true}>Subsidiary</Cell>
-                <Cell colWidth={40} header={true}>Subsidiary</Cell>
+                <Cell colWidth={41} header={true}>Subsidiary110</Cell>
+                <Cell colWidth={40} header={true}>Subsidiary111</Cell>
             </Row>
         ]
     }

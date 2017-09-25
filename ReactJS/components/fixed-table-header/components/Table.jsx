@@ -71,34 +71,43 @@ class Table extends Component {
 
         const columnsWidth = [];
 
+        const currentCellIndexByRow = {};
+
         const getWidthByCells = (cells, currentRowIndex) => {
             console.log("-------------------")
             console.log("currentRowIndex: ", currentRowIndex)
+            console.log("currentCellIndexByRow: ", currentRowIndex, currentCellIndexByRow[currentRowIndex])
 
-            let fromCellIndex = 0;
-            for (let cell of cells) {              
+            for (let cell of cells) {
                 const cellProps = cell.props;
                 const colspan = Number(cellProps.colSpan);
+                console.log("Cell: ", cellProps.children)
 
                 if (colspan && colspan > 1) {
                     console.log("Processing colspan...")
-                    let toCellIndex = fromCellIndex + colspan;
                     const nextRowIndex = currentRowIndex + 1;
+                    if (currentCellIndexByRow[nextRowIndex] === undefined) {
+                        currentCellIndexByRow[nextRowIndex] = 0;
+                    }
+                    let fromCellIndex = currentCellIndexByRow[nextRowIndex];
+                    let toCellIndex = fromCellIndex + colspan - 1;
+
                     const nextRow = headerRows[nextRowIndex];
                     const nextCells = nextRow.props.children;
 
                     console.log("nextRowIndex: ", nextRowIndex)
-                    const colspanCells = this._getColspanCells(nextCells, fromCellIndex, toCellIndex - 1);
-
-                    fromCellIndex += colspanCells.length;
-                    getWidthByCells(colspanCells, nextRowIndex);                   
+                    const colspanCells = this._getColspanCells(nextCells, fromCellIndex, toCellIndex);
+                    currentCellIndexByRow[nextRowIndex] += colspanCells.length;
+                    getWidthByCells(colspanCells, nextRowIndex);
+                    console.log("End Processing colspan...")
                 }
                 else {
                     const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
+                    
+                    console.log("currentCellIndexByRow: ", currentCellIndexByRow);
+                    console.log("Current result: ", columnsWidth);
                 }
-
-                console.log("Current result: ", columnsWidth);
             }
         }
 
@@ -117,7 +126,7 @@ class Table extends Component {
             console.log("i: ", i)
             console.log("toCellIndex", toCellIndex)
             const cell = cells[i];
-            if(cell.props.colSpan){
+            if (cell.props.colSpan) {
                 toCellIndex -= 1;
             }
             colspanCells.push(cells[i]);
