@@ -96,6 +96,8 @@
     border-left: 1px solid #fff; }
     .header-content .table > thead > tr > th:first-child {
       border-left: none; }
+    .header-content .table > thead > tr > th:nth-child(n > 1) {
+      border-top: 1px solid #fff; }
 
 .footer-content {
   border-top: none; }

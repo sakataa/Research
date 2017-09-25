@@ -2,9 +2,7 @@ import React, { Component, Children } from 'react';
 import ReactDOM from 'react-dom';
 import RowLayout from './RowLayout';
 import PropTypes from 'prop-types';
-import createTableSection from './TableSection';
-import Row from './Row';
-import Cell from './Cell';
+import createTableSection from './tableSection';
 
 const headerContainerProps = { className: "header-content", isHeader: true };
 const Header = createTableSection(headerContainerProps);
@@ -52,7 +50,7 @@ class Table extends Component {
         minWidth: PropTypes.number,
         autoWidth: PropTypes.bool,
         bodyHeight: PropTypes.number,
-        header: PropTypes.arrayOf(PropTypes.object).isRequired,
+        header: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]).isRequired,
         body: PropTypes.arrayOf(PropTypes.object),
         footer: PropTypes.arrayOf(PropTypes.object)
     }
@@ -65,71 +63,54 @@ class Table extends Component {
 
     _getColumnsWidth() {
         const headerRows = this.props.header;
-        if (headerRows.length === 0) {
+        if (Array.isArray(headerRows) && headerRows.length === 0) {
             return null;
         }
 
         const columnsWidth = [];
-
-        const currentCellIndexByRow = {};
+        const currentNextCellIndexByRow = {};
 
         const getWidthByCells = (cells, currentRowIndex) => {
-            console.log("-------------------")
-            console.log("currentRowIndex: ", currentRowIndex)
-            console.log("currentCellIndexByRow: ", currentRowIndex, currentCellIndexByRow[currentRowIndex])
-
-            for (let cell of cells) {
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
                 const cellProps = cell.props;
                 const colspan = Number(cellProps.colSpan);
-                console.log("Cell: ", cellProps.children)
 
                 if (colspan && colspan > 1) {
-                    console.log("Processing colspan...")
                     const nextRowIndex = currentRowIndex + 1;
-                    if (currentCellIndexByRow[nextRowIndex] === undefined) {
-                        currentCellIndexByRow[nextRowIndex] = 0;
+                    if (currentNextCellIndexByRow[nextRowIndex] === undefined) {
+                        currentNextCellIndexByRow[nextRowIndex] = 0;
                     }
-                    let fromCellIndex = currentCellIndexByRow[nextRowIndex];
-                    let toCellIndex = fromCellIndex + colspan - 1;
+                    const fromNextCellIndex = currentNextCellIndexByRow[nextRowIndex];
+                    const toNextCellIndex = fromNextCellIndex + colspan - 1;
+                    const nextCells = headerRows[nextRowIndex].props.children;
 
-                    const nextRow = headerRows[nextRowIndex];
-                    const nextCells = nextRow.props.children;
-
-                    console.log("nextRowIndex: ", nextRowIndex)
-                    const colspanCells = this._getColspanCells(nextCells, fromCellIndex, toCellIndex);
-                    currentCellIndexByRow[nextRowIndex] += colspanCells.length;
-                    getWidthByCells(colspanCells, nextRowIndex);
-                    console.log("End Processing colspan...")
+                    const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
+                    currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
+                    getWidthByCells(nextColspanCells, nextRowIndex);
                 }
                 else {
                     const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
-                    
-                    console.log("currentCellIndexByRow: ", currentCellIndexByRow);
-                    console.log("Current result: ", columnsWidth);
                 }
             }
         }
 
-        const cellListOfFirstRow = headerRows[0].props.children, currentRowIndex = 0;
-        getWidthByCells(cellListOfFirstRow, currentRowIndex);
-
+        const currentRowIndex = 0;
+        const cellList = Array.isArray(headerRows) ? headerRows[currentRowIndex].props.children : headerRows.props.children;
+        getWidthByCells(cellList, currentRowIndex);
 
         return columnsWidth;
     }
 
-    _getColspanCells(cells, fromCellIndex, toCellIndex) {
-        console.log("fromCellIndex: ", fromCellIndex)
-        console.log("toCellIndex: ", toCellIndex)
+    _getNextColspanCells(cells, fromCellIndex, toCellIndex) {
         const colspanCells = [];
         for (let i = fromCellIndex; i <= toCellIndex; i++) {
-            console.log("i: ", i)
-            console.log("toCellIndex", toCellIndex)
             const cell = cells[i];
             if (cell.props.colSpan) {
                 toCellIndex -= 1;
             }
-            colspanCells.push(cells[i]);
+            colspanCells.push(cell);
         }
 
         return colspanCells;
@@ -151,10 +132,8 @@ class Table extends Component {
     _handleResize = (event) => {
         event.preventDefault();
         const maxWidth = window.innerWidth - this.diffWidth;
-        console.log("Handle resize");
 
         if (this.state.maxWidth !== maxWidth) {
-            console.log("Updating width");
             this.setState({ maxWidth });
         }
     }

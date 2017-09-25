@@ -1,6 +1,6 @@
 ﻿[
   {
-    "outputFile": "styles/components/_fixed-table-header.css",
+    "outputFile": "_fixed-table-header.css",
     "inputFile": "styles/components/_fixed-table-header.scss"
   },
   {
