@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import configureStore from './configureStore';
 import * as RoutesModule from './routes';
@@ -23,7 +23,7 @@ function renderApp() {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                <Router history={history} children={routes} />
+                <ConnectedRouter history={history} children={routes} />
             </Provider>
         </AppContainer>,
         document.getElementById('react-app')

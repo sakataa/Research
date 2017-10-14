@@ -16,7 +16,8 @@ export default createServerRenderer(params => {
         // corresponding to the incoming URL
         const basename = params.baseUrl.substring(0, params.baseUrl.length - 1); // Remove trailing slash
         const urlAfterBasename = params.url.substring(basename.length);
-        const store = configureStore(createMemoryHistory());
+        const memoryHistory = createMemoryHistory();
+        const store = configureStore(memoryHistory);
         store.dispatch(replace(urlAfterBasename));
 
         // Prepare an instance of the application and perform an inital render that will
@@ -24,7 +25,7 @@ export default createServerRenderer(params => {
         const routerContext = {};
         const app = (
             <Provider store={store}>
-                <StaticRouter basename={basename} context={routerContext} location={params.location.path} children={routes} />
+                <StaticRouter basename={ basename } context={ routerContext } location={ params.location.path } children={ routes } />
             </Provider>
         );
         renderToString(app);
