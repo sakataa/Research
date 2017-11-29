@@ -22,29 +22,13 @@ class App extends Component {
     get header() {
         return [
             <Row key={`headerRow0`} style={{ height: 32 }}>
-                <Cell colSpan="2" header={true}>Col 0</Cell>
-                <Cell colWidth={80} rowSpan="3" header={true}>Col1</Cell>
-                <Cell colSpan="3" header={true}>Col2</Cell>
-                <Cell colSpan="3" header={true}>Col3</Cell>
-            </Row>,
-
-            <Row key={`headerRow1`} >
-                <Cell rowSpan="2" colWidth={45} header={true}>Col 01</Cell>
-                <Cell rowSpan="2" colWidth={46} header={true}>Col 02</Cell>
-
-                <Cell colSpan="2" header={true}>Col 20</Cell>
-                <Cell rowSpan="2" colWidth={49} header={true}>Col 21</Cell>
-
-                <Cell rowSpan="2" colWidth={50} header={true}>Col 30</Cell>
-                <Cell colSpan="2" header={true}>Col 31</Cell>
-            </Row>,
-
-            <Row key={`headerRow2`} >
-                <Cell colWidth={47} header={true}>Col 200</Cell>
-                <Cell colWidth={48} header={true}>Col 201</Cell>
-
-                <Cell colWidth={51} header={true}>Col 310</Cell>
-                <Cell colWidth={52} header={true}>Col 311</Cell>
+                <Cell colWidth={100} header={true}>Col 0</Cell>
+                <Cell colWidth={200} header={true}>Col1</Cell>
+                <Cell colWidth={300} header={true}>Col2</Cell>
+                <Cell colWidth={400} header={true}>Col3</Cell>
+                <Cell colWidth={100} header={true}>Col 0</Cell>
+                <Cell colWidth={200} header={true}>Col1</Cell>
+                <Cell colWidth={300} header={true}>Col2</Cell>
             </Row>
         ]
     }
@@ -155,7 +139,6 @@ class App extends Component {
                     bodyHeight={300}
                     header={this.header}
                     body={this.body}
-                    footer={this.footer}
                 />
             </div>
         );

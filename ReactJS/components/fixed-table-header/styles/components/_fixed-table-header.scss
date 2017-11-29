@@ -24,11 +24,12 @@ $paddingRightContainer: 17px;
 }
 
 .table {
+    table-layout: fixed;
     th, td {
         white-space: normal;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 1px;
+        min-width: 1px;
     }
 }
 

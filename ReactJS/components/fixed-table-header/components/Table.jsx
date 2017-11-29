@@ -13,6 +13,7 @@ const Body = createTableSection(bodyContainerProps);
 const footerContainerProps = { className: "footer-content" };
 const Footer = createTableSection(footerContainerProps);
 
+const SCROLLBAR_WIDTH = 19;
 const MAX_WIDTH = window.innerWidth - 30;
 const DEFAULT_MILLISECOND_FOR_WAITING = 500;
 const DEFAULT_COLUMN_WIDTH = 100;
@@ -141,7 +142,7 @@ class Table extends Component {
 
     _getUpdatedColumnLayout() {
         const { width, autoWidth } = this.props;
-        const sumOfColumnWidth = autoWidth ? this.state.maxWidth : width;
+        const sumOfColumnWidth = autoWidth ? this.state.maxWidth - SCROLLBAR_WIDTH : width;
 
         const newColumnsWidth = this.columnWidthSum && this.columnsWidth.map(cellWidth => {
             return sumOfColumnWidth / this.columnWidthSum * cellWidth
