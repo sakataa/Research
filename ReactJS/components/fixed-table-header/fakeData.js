@@ -429,7 +429,7 @@ let mainData = [{
 }];
 
 let data = [];
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 200; i++) {
     data = data.concat(mainData);
 }
 

@@ -6,6 +6,8 @@ import createTableSection from './tableSection';
 import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_WIDTH, SCROLLBAR_WIDTH } from '../constants';
 import Page from './Page';
 
+const MAX_ITEM = 5000;
+
 function debounce(func, wait) {
     let timeout;
     return function () {
@@ -41,6 +43,18 @@ class Table extends Component {
             contentHeight: props.bodyHeight
         }
         this.adjustedHeight = props.adjustedHeight;
+
+        this.pagingInfo = {
+            pageSize: MAX_ITEM,
+            totalRows: this.props.body.length,
+            pageIndex: 0,
+            isLoading: false
+        }
+        this.lastScroll = 0;
+
+        this.state = {
+            bodyData: this._getBodyData()
+        }
     }
 
     static propTypes = {
@@ -64,6 +78,66 @@ class Table extends Component {
         autoWidth: true,
         isPaging: false,
         adjustedHeight: 0
+    }
+
+    _getBodyData = () => {
+        const bodyData = [];
+        for (let i = 0; i < this.pagingInfo.pageSize; i++) {
+            bodyData.push(this.props.body[i]);
+        }
+
+        return bodyData;
+    }
+
+    handleScroll = (event) => {
+        event.preventDefault();
+        const { scrollHeight, clientHeight, scrollTop } = event.target;
+
+        if (this.lastScroll >= scrollTop) {
+            this.lastScroll = scrollTop;
+            return;
+        }
+
+        this.lastScroll = scrollTop;
+        if (scrollHeight > clientHeight) {
+            const diffHeight = scrollHeight - clientHeight;
+            //console.log(scrollHeight, clientHeight, diffHeight, scrollTop);
+
+            const pagingInfo = this.pagingInfo;
+            if (diffHeight - scrollTop <= 200 && !this.pagingInfo.isLoading) {
+                const totalPage = Math.ceil((pagingInfo.totalRows / pagingInfo.pageSize));
+                console.log("totalPage:", totalPage);
+
+                const bodyData = [];
+                if (pagingInfo.pageIndex + 1 < totalPage) {
+                    console.log("Begin process scrolling");
+                    pagingInfo.isLoading = true;
+                    pagingInfo.pageIndex++;
+                    console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
+                    const startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
+                    let endIndex = startIndex + pagingInfo.pageSize;
+
+                    if (endIndex <= pagingInfo.totalRows) {
+                        console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
+                        for (let i = startIndex; i < endIndex; i++) {
+                            bodyData.push(this.props.body[i]);
+                        }
+                    }
+                    else {
+                        console.log(`Run out data - start: ${pagingInfo.totalRows - pagingInfo.pageSize}, end: ${pagingInfo.totalRows - 1}`);
+                        for (let i = pagingInfo.totalRows - pagingInfo.pageSize; i < pagingInfo.totalRows; i++) {
+                            bodyData.push(this.props.body[i]);
+                        }
+                    }
+
+                    if (bodyData.length) {
+                        this.setState({ bodyData: this.state.bodyData.concat(bodyData) });
+                    }
+
+                    pagingInfo.isLoading = false;
+                }
+            }
+        }
     }
 
     _getColumnsWidth() {
@@ -134,6 +208,7 @@ class Table extends Component {
     componentDidMount() {
         this._handleResize();
         window.addEventListener('resize', debounce(this._handleResize));
+        this.bodyWrapper.addEventListener('scroll', this.handleScroll);
     }
 
     componentWillUnmount() {
@@ -181,6 +256,7 @@ class Table extends Component {
     render() {
         const { width, autoWidth, minWidth, header, body, footer, isPaging, pageOption, onPaging } = this.props;
         const maxWidth = this.state.maxWidth;
+        const { bodyData } = this.state;
 
         const newColumnLayout = this.columnWidthSum && this.columnWidthSum !== width ?
             this._getUpdatedColumnLayout() :
@@ -205,10 +281,10 @@ class Table extends Component {
                 </Header>
 
                 {
-                    body &&
+                    bodyData.length > 0 &&
                     <Body {...sectionProps} maxHeight={this.state.contentHeight}>
                         {rowLayout}
-                        {body}
+                        {bodyData}
                     </Body>
                 }
 
