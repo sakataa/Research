@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 class Cell extends Component {
     constructor(props) {
         super(props);
-        this.header = props.header;
     }
 
     static propTypes = {
@@ -18,7 +17,7 @@ class Cell extends Component {
     render() {
         const { header, colWidth, ...rest } = this.props;
         return (
-            this.header ? <th {...rest}>{this.props.children}</th> : <td {...rest}>{this.props.children}</td>
+            header ? <th {...rest}>{this.props.children}</th> : <td {...rest}>{this.props.children}</td>
         );
     }
 }

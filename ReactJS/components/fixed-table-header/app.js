@@ -135,7 +135,8 @@ class App extends Component {
             <div className="result-content">
                 <Table
                     minWidth={600}
-                    autoWidth={true}
+                    autoWidth={false}
+                    width={800}
                     bodyHeight={300}
                     header={this.header}
                     body={this.body}

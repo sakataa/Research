@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-const SCROLLBAR_WIDTH = 19;
-const GUTTER = 15;
-const MAX_WIDTH = window.innerWidth - (GUTTER * 2);
+import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../constants'
 
 const createTableSection = (extendedContainerProps, extendedTableProps) => {
     return class TableSection extends Component {
@@ -17,6 +14,7 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
             maxWidth: PropTypes.number,
             minWidth: PropTypes.number,
             autoWidth: PropTypes.bool,
+            maxHeight: PropTypes.number
         };
 
         static defaultProps = {
@@ -25,15 +23,6 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
             maxWidth: MAX_WIDTH,
             autoWidth: true
         };
-
-        componentWillUnmount = () => {
-          console.log("unmounting...");
-        }
-        
-        componentWillMount = () => {
-            console.log("mounting...");
-        }
-        
 
         get containerWidth() {
             const { autoWidth, maxWidth, width } = this.props;
@@ -53,7 +42,8 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
 
         get tableStyle() {
             const { minWidth } = this.props;
-            const tableWidth = Math.max(this.containerWidth, minWidth) - SCROLLBAR_WIDTH;
+            const maxWidth = minWidth ? Math.max(this.containerWidth, minWidth) : this.containerWidth;
+            const tableWidth = maxWidth - SCROLLBAR_WIDTH;
 
             return {
                 width: tableWidth
@@ -62,16 +52,16 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
 
         render() {
             const { tableClass, width, autoWidth, maxWidth, minWidth, maxHeight, ...rest } = this.props;
-            const { isHeader, ...restContainerProps } = extendedContainerProps;
+            const { isHeader, getRef, ...restContainerProps } = extendedContainerProps;
 
             return (
-                <div {...rest} style={this.containerStyle} {...restContainerProps}>
+                <div {...rest} style={this.containerStyle} ref={getRef} {...restContainerProps}>
                     <div className="table-wrapper">
                         <table style={this.tableStyle} className={tableClass} {...extendedTableProps}>
                             {
-                                isHeader ? 
-                                <thead>{this.props.children}</thead> : 
-                                <tbody>{this.props.children}</tbody>
+                                isHeader ?
+                                    <thead>{this.props.children}</thead> :
+                                    <tbody>{this.props.children}</tbody>
                             }
                         </table>
                     </div>
