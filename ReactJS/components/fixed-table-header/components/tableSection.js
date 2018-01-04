@@ -51,12 +51,13 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
         }
 
         render() {
-            const { tableClass, width, autoWidth, maxWidth, minWidth, maxHeight, ...rest } = this.props;
+            const { tableClass, width, autoWidth, maxWidth, minWidth, maxHeight, wrapperStyle, elasticStyle, ...rest } = this.props;
             const { isHeader, getRef, ...restContainerProps } = extendedContainerProps;
 
             return (
                 <div {...rest} style={this.containerStyle} ref={getRef} {...restContainerProps}>
-                    <div className="table-wrapper">
+                    <div className="table-wrapper" style={wrapperStyle}>
+                        <div style={elasticStyle}></div>
                         <table style={this.tableStyle} className={tableClass} {...extendedTableProps}>
                             {
                                 isHeader ?

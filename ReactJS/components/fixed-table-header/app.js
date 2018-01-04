@@ -37,6 +37,7 @@ class App extends Component {
         /* const data = this.props.gridData.Data; */
         const data = this.data.Data;
         let rows = [];
+        let identity = 0;
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
             const rowSpan = item.Details.length;
@@ -50,7 +51,7 @@ class App extends Component {
                     subsidiaryWinLoss = NumberFormat.formatDecimal(detail.SubsidiaryWinLoss);
 
                 rows.push(
-                    <Row key={`tr${i}${j}`}>
+                    <Row key={`tr${i}-${j}`} id={identity++}>
                         {isFirstRow ? <Cell title={item.Subsidiary} rowSpan={rowSpan}>{item.Subsidiary}</Cell> : undefined}
                         {isFirstRow ? <Cell title={item.CurrencyName} rowSpan={rowSpan} className="center-align">{item.CurrencyName}</Cell> : undefined}
                         <Cell title={detail.Product}>{detail.Product}</Cell>
