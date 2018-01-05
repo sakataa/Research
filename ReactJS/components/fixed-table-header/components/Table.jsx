@@ -303,7 +303,7 @@ class Table extends Component {
 
         this.elasticHeight = this.pagingInfo.pageIndex % 2 !== 0 ? 
         (this.elasticHeight || 0)
-        : (((this.pagingInfo.pageIndex + 1) * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
+        : (this.pagingInfo.pageIndex * MAX_ITEM / 2) * ROW_HEIGHT;
         const elasticStyle = {
             height: this.pagingInfo.pageIndex == 0 ? 0 : this.elasticHeight
         }
