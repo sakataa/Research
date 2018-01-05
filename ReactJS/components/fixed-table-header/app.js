@@ -51,10 +51,10 @@ class App extends Component {
                     subsidiaryWinLoss = NumberFormat.formatDecimal(detail.SubsidiaryWinLoss);
 
                 rows.push(
-                    <Row key={`tr${i}-${j}`} id={identity++}>
+                    <Row key={`tr${i}-${j}`} id={identity}>
                         {isFirstRow ? <Cell title={item.Subsidiary} rowSpan={rowSpan}>{item.Subsidiary}</Cell> : undefined}
                         {isFirstRow ? <Cell title={item.CurrencyName} rowSpan={rowSpan} className="center-align">{item.CurrencyName}</Cell> : undefined}
-                        <Cell title={detail.Product}>{detail.Product}</Cell>
+                        <Cell title={detail.Product}>{identity}</Cell>
                         <Cell title={betcount} className="right-align">{betcount}</Cell>
                         <Cell title={turnover} className="right-align">{turnover}</Cell>
                         <Cell title={customerWinLoss} className="right-align">{customerWinLoss}</Cell>
@@ -63,7 +63,7 @@ class App extends Component {
                         </Cell>
                     </Row>
                 );
-
+                identity++;
                 isFirstRow = false;
             }
         }

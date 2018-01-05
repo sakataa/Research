@@ -6,7 +6,7 @@ import createTableSection from './tableSection';
 import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_WIDTH, SCROLLBAR_WIDTH } from '../constants';
 import Page from './Page';
 
-const MAX_ITEM = 100;
+const MAX_ITEM = 50;
 const ROW_HEIGHT = 21;
 
 function debounce(func, wait) {
@@ -102,14 +102,18 @@ class Table extends Component {
             const pagingInfo = this.pagingInfo;
 
             const totalPage = Math.ceil((pagingInfo.totalRows / pagingInfo.pageSize));
-            const bodyData = [];
-            if (scrollTop > this.lastScroll) { //scroll down
-                const maxScrollTopPerPage = (pagingInfo.pageIndex + 1) * MAX_ITEM * ROW_HEIGHT;
+            let bodyData = [];
+            if (scrollTop >= this.lastScroll) { //scroll down
+                const maxScrollTopPerPage = (((pagingInfo.pageIndex + 1) * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
                 if (scrollTop >= maxScrollTopPerPage) {
-                    if (pagingInfo.pageIndex + 1 < totalPage) {
+                    if (pagingInfo.pageIndex < totalPage) {
                         console.log("Begin process scrolling down");
                         pagingInfo.isLoading = true;
-                        pagingInfo.pageIndex++;
+
+                        if (pagingInfo.pageIndex < totalPage) {
+                            pagingInfo.pageIndex++;
+                        }
+
                         console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
                         let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
                         let endIndex = startIndex + pagingInfo.pageSize;
@@ -127,11 +131,14 @@ class Table extends Component {
                 }
             }
             else { // scroll up
-                const minScrollTopPerPage = pagingInfo.pageIndex * MAX_ITEM * ROW_HEIGHT;
+                const minScrollTopPerPage = ((pagingInfo.pageIndex * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
                 if (scrollTop < minScrollTopPerPage) {
                     console.log("Begin process scrolling up");
                     pagingInfo.isLoading = true;
-                    pagingInfo.pageIndex--;
+
+                    if (pagingInfo.pageIndex > 0) {
+                        pagingInfo.pageIndex--;
+                    }
 
                     console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
                     let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
@@ -153,7 +160,12 @@ class Table extends Component {
             this.lastScroll = scrollTop;
 
             if (bodyData.length) {
-                this.setState({ bodyData }, () => { this.bodyWrapper.scrollTop = this.lastScroll });
+                bodyData = pagingInfo.pageIndex % 2 !== 0 ?
+                    [...this.state.bodyData, ...bodyData] :
+                    [...this.state.bodyData.slice(pagingInfo.pageSize), ...bodyData];
+
+                this.setState({ bodyData });
+                this.bodyWrapper.scrollTop = this.lastScroll;
             }
         }
     }
@@ -288,9 +300,14 @@ class Table extends Component {
         const bodyWrapperStyle = {
             height: this.props.body.length * ROW_HEIGHT
         }
+
+        this.elasticHeight = this.pagingInfo.pageIndex % 2 !== 0 ? 
+        (this.elasticHeight || 0)
+        : (((this.pagingInfo.pageIndex + 1) * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
         const elasticStyle = {
-            height: this.pagingInfo.pageIndex == 0 ? 0 : this.pagingInfo.pageIndex * MAX_ITEM * ROW_HEIGHT
+            height: this.pagingInfo.pageIndex == 0 ? 0 : this.elasticHeight
         }
+        console.log("elastic:", elasticStyle.height);
         const rowLayout = <RowLayout columnLayout={newColumnLayout} />;
 
         const Header = this.Header;
@@ -298,7 +315,7 @@ class Table extends Component {
         const Footer = this.Footer;
 
         return (
-            <div className="table-container" style={{ maxWidth }}>
+            <div className="table-container" style={{ maxWidth, marginTop: 200 }}>
                 <Header {...sectionProps}>
                     {rowLayout}
                     {header}
@@ -306,7 +323,7 @@ class Table extends Component {
 
                 {
                     bodyData.length > 0 &&
-                    <Body {...sectionProps} maxHeight={this.state.contentHeight} wrapperStyle={bodyWrapperStyle} elasticStyle={elasticStyle}>
+                    <Body {...sectionProps} maxHeight={500} wrapperStyle={bodyWrapperStyle} elasticStyle={elasticStyle}>
                         {rowLayout}
                         {bodyData}
                     </Body>
