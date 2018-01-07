@@ -105,68 +105,63 @@ class Table extends Component {
             let bodyData = [];
             if (scrollTop >= this.lastScroll) { //scroll down
                 const maxScrollTopPerPage = (((pagingInfo.pageIndex + 1) * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
-                if (scrollTop >= maxScrollTopPerPage) {
-                    if (pagingInfo.pageIndex < totalPage) {
-                        console.log("Begin process scrolling down");
-                        pagingInfo.isLoading = true;
-
-                        if (pagingInfo.pageIndex < totalPage) {
-                            pagingInfo.pageIndex++;
-                        }
-
-                        console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
-                        let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
-                        let endIndex = startIndex + pagingInfo.pageSize;
-
-                        if (endIndex > pagingInfo.totalRows) {
-                            startIndex = pagingInfo.totalRows - pagingInfo.pageSize;
-                            endIndex = pagingInfo.totalRows;
-                        }
-
-                        console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
-                        for (let i = startIndex; i < endIndex; i++) {
-                            bodyData.push(this.props.body[i]);
-                        }
-                    }
-                }
-            }
-            else { // scroll up
-                const minScrollTopPerPage = ((pagingInfo.pageIndex * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
-                if (scrollTop < minScrollTopPerPage) {
-                    console.log("Begin process scrolling up");
+                if (scrollTop >= maxScrollTopPerPage && pagingInfo.pageIndex < totalPage) {
+                    console.log("Begin process scrolling down");
                     pagingInfo.isLoading = true;
-
-                    if (pagingInfo.pageIndex > 0) {
-                        pagingInfo.pageIndex--;
-                    }
+                    pagingInfo.pageIndex++;
 
                     console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
                     let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
                     let endIndex = startIndex + pagingInfo.pageSize;
 
-                    if (endIndex < 0) {
-                        startIndex = 0;
-                        endIndex = pagingInfo.pageSize;
+                    if (endIndex > pagingInfo.totalRows) {
+                        startIndex = pagingInfo.totalRows - pagingInfo.pageSize - 1;
+                        endIndex = pagingInfo.totalRows;
                     }
 
                     console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
                     for (let i = startIndex; i < endIndex; i++) {
                         bodyData.push(this.props.body[i]);
                     }
+
+                    if (bodyData.length) {
+                        bodyData = pagingInfo.pageIndex % 2 !== 0 ?
+                            [...this.state.bodyData, ...bodyData] :
+                            [...this.state.bodyData.slice(pagingInfo.pageSize), ...bodyData];
+
+                        this.setState({ bodyData });
+                    }
+                }
+            }
+            else { // scroll up
+                const minScrollTopPerPage = ((pagingInfo.pageIndex * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
+                if (scrollTop < minScrollTopPerPage && pagingInfo.pageIndex > 0) {
+                    console.log("Begin process scrolling up");
+                    pagingInfo.isLoading = true;
+                    pagingInfo.pageIndex--;
+
+                    console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
+                    let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
+                    let endIndex = startIndex + pagingInfo.pageSize;
+
+                    console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
+                    for (let i = startIndex; i < endIndex; i++) {
+                        bodyData.push(this.props.body[i]);
+                    }
+
+                    if (bodyData.length) {
+                        bodyData = pagingInfo.pageIndex % 2 === 0 ?
+                            [...bodyData, ...this.state.bodyData] :
+                            [...bodyData, ...this.state.bodyData.slice(0, pagingInfo.pageSize)];
+
+                        this.setState({ bodyData });
+                    }
                 }
             }
 
             pagingInfo.isLoading = false;
             this.lastScroll = scrollTop;
-
-            if (bodyData.length) {
-                bodyData = pagingInfo.pageIndex % 2 !== 0 ?
-                    [...this.state.bodyData, ...bodyData] :
-                    [...this.state.bodyData.slice(pagingInfo.pageSize), ...bodyData];
-
-                this.setState({ bodyData });
-                this.bodyWrapper.scrollTop = this.lastScroll;
-            }
+            this.bodyWrapper.scrollTop = this.lastScroll;
         }
     }
 
@@ -301,9 +296,9 @@ class Table extends Component {
             height: this.props.body.length * ROW_HEIGHT
         }
 
-        this.elasticHeight = this.pagingInfo.pageIndex % 2 !== 0 ? 
-        (this.elasticHeight || 0)
-        : (this.pagingInfo.pageIndex * MAX_ITEM / 2) * ROW_HEIGHT;
+        this.elasticHeight = this.pagingInfo.pageIndex % 2 !== 0 ?
+            (this.elasticHeight || 0)
+            : (this.pagingInfo.pageIndex * MAX_ITEM / 2) * ROW_HEIGHT;
         const elasticStyle = {
             height: this.pagingInfo.pageIndex == 0 ? 0 : this.elasticHeight
         }
@@ -315,7 +310,7 @@ class Table extends Component {
         const Footer = this.Footer;
 
         return (
-            <div className="table-container" style={{ maxWidth, marginTop: 200 }}>
+            <div className="table-container" style={{ maxWidth, marginTop: 0 }}>
                 <Header {...sectionProps}>
                     {rowLayout}
                     {header}
@@ -323,7 +318,7 @@ class Table extends Component {
 
                 {
                     bodyData.length > 0 &&
-                    <Body {...sectionProps} maxHeight={500} wrapperStyle={bodyWrapperStyle} elasticStyle={elasticStyle}>
+                    <Body {...sectionProps} maxHeight={this.state.contentHeight} wrapperStyle={bodyWrapperStyle} elasticStyle={elasticStyle}>
                         {rowLayout}
                         {bodyData}
                     </Body>
