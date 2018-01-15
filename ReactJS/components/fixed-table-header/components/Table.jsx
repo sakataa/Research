@@ -6,7 +6,9 @@ import createTableSection from './tableSection';
 import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_WIDTH, SCROLLBAR_WIDTH } from '../constants';
 import Page from './Page';
 
-const MAX_ITEM = 50;
+import RowPositionManager from './utils/RowPositionManager';
+
+const MAX_ITEM = 100;
 const ROW_HEIGHT = 21;
 
 function debounce(func, wait) {
@@ -41,21 +43,19 @@ class Table extends Component {
         this.columnsWidth = this._getColumnsWidth();
         this.state = {
             maxWidth: props.maxWidth,
-            contentHeight: props.bodyHeight
+            contentHeight: props.bodyHeight,
+            bodyData: this._getBodyData()
         }
         this.adjustedHeight = props.adjustedHeight;
 
-        this.pagingInfo = {
-            pageSize: MAX_ITEM,
-            totalRows: this.props.body.length,
-            pageIndex: 0,
-            isLoading: false
-        }
+        this.totalRow = this.props.body.length;
+        this.rowNum = MAX_ITEM;
+        this.rowHeight = ROW_HEIGHT;
+        this.isScrolling = false;
         this.lastScroll = 0;
+        this.lastIndex = 0;
 
-        this.state = {
-            bodyData: this._getBodyData()
-        }
+        this._rowPositionManager = new RowPositionManager(this.totalRow, this.rowHeight, this.rowNum);
     }
 
     static propTypes = {
@@ -83,7 +83,7 @@ class Table extends Component {
 
     _getBodyData = () => {
         const bodyData = [];
-        for (let i = 0; i < this.pagingInfo.pageSize; i++) {
+        for (let i = 0; i < MAX_ITEM; i++) {
             bodyData.push(this.props.body[i]);
         }
 
@@ -92,76 +92,25 @@ class Table extends Component {
 
     handleScroll = (event) => {
         event.preventDefault();
-        if (this.pagingInfo.isLoading) {
+        if (this.isScrolling) {
             return;
         }
 
         const { scrollHeight, clientHeight, scrollTop } = event.target;
 
         if (scrollHeight > clientHeight) {
-            const pagingInfo = this.pagingInfo;
-
-            const totalPage = Math.ceil((pagingInfo.totalRows / pagingInfo.pageSize));
+            this.isScrolling = true;
             let bodyData = [];
-            if (scrollTop >= this.lastScroll) { //scroll down
-                const maxScrollTopPerPage = (((pagingInfo.pageIndex + 1) * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
-                if (scrollTop >= maxScrollTopPerPage && pagingInfo.pageIndex < totalPage) {
-                    console.log("Begin process scrolling down");
-                    pagingInfo.isLoading = true;
-                    pagingInfo.pageIndex++;
 
-                    console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
-                    let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
-                    let endIndex = startIndex + pagingInfo.pageSize;
-
-                    if (endIndex > pagingInfo.totalRows) {
-                        startIndex = pagingInfo.totalRows - pagingInfo.pageSize - 1;
-                        endIndex = pagingInfo.totalRows;
-                    }
-
-                    console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
-                    for (let i = startIndex; i < endIndex; i++) {
-                        bodyData.push(this.props.body[i]);
-                    }
-
-                    if (bodyData.length) {
-                        bodyData = pagingInfo.pageIndex % 2 !== 0 ?
-                            [...this.state.bodyData, ...bodyData] :
-                            [...this.state.bodyData.slice(pagingInfo.pageSize), ...bodyData];
-
-                        this.setState({ bodyData });
-                    }
-                }
-            }
-            else { // scroll up
-                const minScrollTopPerPage = ((pagingInfo.pageIndex * MAX_ITEM) - (MAX_ITEM / 2)) * ROW_HEIGHT;
-                if (scrollTop < minScrollTopPerPage && pagingInfo.pageIndex > 0) {
-                    console.log("Begin process scrolling up");
-                    pagingInfo.isLoading = true;
-                    pagingInfo.pageIndex--;
-
-                    console.log("pagingInfo.pageIndex:", pagingInfo.pageIndex);
-                    let startIndex = pagingInfo.pageIndex * pagingInfo.pageSize;
-                    let endIndex = startIndex + pagingInfo.pageSize;
-
-                    console.log(`start: ${startIndex}, end: ${endIndex - 1}`);
-                    for (let i = startIndex; i < endIndex; i++) {
-                        bodyData.push(this.props.body[i]);
-                    }
-
-                    if (bodyData.length) {
-                        bodyData = pagingInfo.pageIndex % 2 === 0 ?
-                            [...bodyData, ...this.state.bodyData] :
-                            [...bodyData, ...this.state.bodyData.slice(0, pagingInfo.pageSize)];
-
-                        this.setState({ bodyData });
-                    }
-                }
+            const range = this._rowPositionManager.getVisibleRange(this.state.contentHeight, scrollTop);
+            console.log("range: ", range)
+            for (let i = range.start; i < range.stop; i++) {
+                bodyData.push(this.props.body[i]);
             }
 
-            pagingInfo.isLoading = false;
-            this.lastScroll = scrollTop;
-            this.bodyWrapper.scrollTop = this.lastScroll;
+            this.setState({ bodyData });
+
+            this.isScrolling = false;
         }
     }
 
@@ -231,6 +180,7 @@ class Table extends Component {
     }
 
     componentDidMount() {
+        console.log(this.bodyWrapper);
         this._handleResize();
         window.addEventListener('resize', debounce(this._handleResize));
         this.bodyWrapper.addEventListener('scroll', this.handleScroll);
@@ -296,13 +246,6 @@ class Table extends Component {
             height: this.props.body.length * ROW_HEIGHT
         }
 
-        this.elasticHeight = this.pagingInfo.pageIndex % 2 !== 0 ?
-            (this.elasticHeight || 0)
-            : (this.pagingInfo.pageIndex * MAX_ITEM / 2) * ROW_HEIGHT;
-        const elasticStyle = {
-            height: this.pagingInfo.pageIndex == 0 ? 0 : this.elasticHeight
-        }
-        console.log("elastic:", elasticStyle.height);
         const rowLayout = <RowLayout columnLayout={newColumnLayout} />;
 
         const Header = this.Header;
@@ -318,7 +261,7 @@ class Table extends Component {
 
                 {
                     bodyData.length > 0 &&
-                    <Body {...sectionProps} maxHeight={this.state.contentHeight} wrapperStyle={bodyWrapperStyle} elasticStyle={elasticStyle}>
+                    <Body {...sectionProps} maxHeight={this.state.contentHeight} wrapperStyle={bodyWrapperStyle}>
                         {rowLayout}
                         {bodyData}
                     </Body>
