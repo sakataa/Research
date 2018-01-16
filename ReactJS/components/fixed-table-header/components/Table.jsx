@@ -6,7 +6,7 @@ import createTableSection from './tableSection';
 import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_WIDTH, SCROLLBAR_WIDTH } from '../constants';
 import Page from './Page';
 
-import RowPositionManager from './utils/RowPositionManager';
+import RowPositionManager, { SCROLL_DIRECTION_BACKWARD, SCROLL_DIRECTION_FORWARD } from './utils/RowPositionManager';
 
 const MAX_ITEM = 100;
 const ROW_HEIGHT = 21;
@@ -29,6 +29,8 @@ function debounce(func, wait) {
 class Table extends Component {
     constructor(props) {
         super(props);
+
+        this.autoHeight = false;
 
         const headerContainerProps = { className: "header-content", isHeader: true };
         this.Header = createTableSection(headerContainerProps);
@@ -82,6 +84,7 @@ class Table extends Component {
     }
 
     _getBodyData = () => {
+        console.log("Total Rows: ", this.props.body.length);
         const bodyData = [];
         for (let i = 0; i < MAX_ITEM; i++) {
             bodyData.push(this.props.body[i]);
@@ -92,26 +95,34 @@ class Table extends Component {
 
     handleScroll = (event) => {
         event.preventDefault();
-        if (this.isScrolling) {
+        if (this.isScrolling || event.target !== this.bodyWrapper) {
             return;
         }
 
         const { scrollHeight, clientHeight, scrollTop } = event.target;
 
-        if (scrollHeight > clientHeight) {
+        const diffScrollTop = Math.abs(scrollTop - this.lastScroll);
+        if (scrollHeight > clientHeight && diffScrollTop > this.rowHeight) {
             this.isScrolling = true;
             let bodyData = [];
 
-            const range = this._rowPositionManager.getVisibleRange(this.state.contentHeight, scrollTop);
+            const scrollDirection = scrollTop > this.lastScroll ? SCROLL_DIRECTION_FORWARD : SCROLL_DIRECTION_BACKWARD;
+            const range = this._rowPositionManager.getVisibleRange(this.state.contentHeight, scrollTop, scrollDirection);
             console.log("range: ", range)
             for (let i = range.start; i < range.stop; i++) {
                 bodyData.push(this.props.body[i]);
             }
 
+            this.lastScroll = scrollTop;
             this.setState({ bodyData });
-
-            this.isScrolling = false;
         }
+    }
+
+    componentDidUpdate() {
+        if (this.isScrolling && this.bodyWrapper.scrollTop !== this.lastScroll) {
+            this.bodyWrapper.scrollTop = this.lastScroll;
+        }
+        this.isScrolling = false;
     }
 
     _getColumnsWidth() {
@@ -180,7 +191,6 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        console.log(this.bodyWrapper);
         this._handleResize();
         window.addEventListener('resize', debounce(this._handleResize));
         this.bodyWrapper.addEventListener('scroll', this.handleScroll);
@@ -209,11 +219,16 @@ class Table extends Component {
     }
 
     _calculateBodyHeight() {
-        const windowHeight = window.innerHeight;
-        const footerHeight = this.footerWrapper ? this.footerWrapper.offsetHeight : 0;
-        const tableContentHeight = windowHeight - (this.bodyWrapper.offsetTop + footerHeight + 30) - this.adjustedHeight;
+        if (this.autoHeight) {
+            const windowHeight = window.innerHeight;
+            const footerHeight = this.footerWrapper ? this.footerWrapper.offsetHeight : 0;
+            const tableContentHeight = windowHeight - (this.bodyWrapper.offsetTop + footerHeight + 30) - this.adjustedHeight;
 
-        return tableContentHeight;
+            return tableContentHeight;
+        }
+        else {
+            return this.props.bodyHeight;
+        }
     }
 
     _getUpdatedColumnLayout() {
@@ -253,7 +268,7 @@ class Table extends Component {
         const Footer = this.Footer;
 
         return (
-            <div className="table-container" style={{ maxWidth, marginTop: 0 }}>
+            <div className="table-container" style={{ maxWidth, marginTop: 300 }}>
                 <Header {...sectionProps}>
                     {rowLayout}
                     {header}
