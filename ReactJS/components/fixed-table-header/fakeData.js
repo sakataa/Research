@@ -429,11 +429,10 @@ let mainData = [{
 }];
 
 let data = [];
-for (let i = 0; i < 10; i++) {
+data = data.concat(mainData);
+for (let i = 0; i < 0; i++) {
     data = data.concat(mainData);
 }
-
-console.log(data.length);
 
 export default {
     "Data": data,

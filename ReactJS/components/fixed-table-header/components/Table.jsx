@@ -8,7 +8,7 @@ import Page from './Page';
 
 import RowPositionManager, { SCROLL_DIRECTION_BACKWARD, SCROLL_DIRECTION_FORWARD } from './utils/RowPositionManager';
 
-const MAX_ITEM = 100;
+const MAX_ITEM = 20;
 const ROW_HEIGHT = 21;
 
 function debounce(func, wait) {
@@ -46,7 +46,7 @@ class Table extends Component {
         this.state = {
             maxWidth: props.maxWidth,
             contentHeight: props.bodyHeight,
-            bodyData: this._getBodyData()
+            bodyData: this.props.body
         }
         this.adjustedHeight = props.adjustedHeight;
 
@@ -56,6 +56,7 @@ class Table extends Component {
         this.isScrolling = false;
         this.lastScroll = 0;
         this.lastIndex = 0;
+        this.marginTop = 0;
 
         this._rowPositionManager = new RowPositionManager(this.totalRow, this.rowHeight, this.rowNum);
     }
@@ -193,7 +194,7 @@ class Table extends Component {
     componentDidMount() {
         this._handleResize();
         window.addEventListener('resize', debounce(this._handleResize));
-        this.bodyWrapper.addEventListener('scroll', this.handleScroll);
+        //this.bodyWrapper.addEventListener('scroll', this.handleScroll);
     }
 
     componentWillUnmount() {
@@ -276,7 +277,10 @@ class Table extends Component {
 
                 {
                     bodyData.length > 0 &&
-                    <Body {...sectionProps} maxHeight={this.state.contentHeight} wrapperStyle={bodyWrapperStyle}>
+                    <Body {...sectionProps}
+                        maxHeight={this.state.contentHeight}
+                        wrapperStyle={bodyWrapperStyle}
+                        elasticStyle={{ height: this.marginTop }}>
                         {rowLayout}
                         {bodyData}
                     </Body>

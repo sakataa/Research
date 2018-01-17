@@ -10,22 +10,27 @@ export default class RowPositionManager {
     }
 
     getVisibleRange(containerHeight, offset, scrollDirection) {
-        const maxOffset = offset + containerHeight;
-        const start = this._findNearestIndex(offset);
+        console.log("index by scrolltop: ", Math.ceil(offset / this._rowHeight))
+        console.log("scrollTop: ", offset);
+        const maxOffset = offset + containerHeight * 2;
+        console.log("maxOffset: ", maxOffset);
+        console.log("lastIndex: ", this._lastIndex);
+        let start = this._findNearestIndex(offset);
 
         offset = this._getRowOffset(start);
 
         let stop = start;
 
-        while (offset < maxOffset && stop < this._totalRow - 1) {
+        while (offset < maxOffset && stop < this._totalRow) {
             stop++;
-            offset += this._getRowOffset(stop);
+            offset = this._getRowOffset(stop);
         }
-
         const rangeByDirection = this.getRangeByDirection(scrollDirection, start, stop);
 
-        this._getRowOffset(rangeByDirection.stopIndex);
-        return { start: rangeByDirection.startIndex, stop: rangeByDirection.stopIndex };
+        start = rangeByDirection.startIndex;
+        stop = rangeByDirection.stopIndex;
+
+        return { start, stop };
     }
 
     getRangeByDirection(direction, startIndex, stopIndex) {
@@ -51,6 +56,7 @@ export default class RowPositionManager {
             // If we've already measured cells within this range just use a binary search as it's faster.
             return this._binarySearch(lastIndex, 0, offset);
         } else {
+            console.log("lastOffset < offset");
             // If we haven't yet measured this high, fallback to an exponential search with an inner binary search.
             // The exponential search avoids pre-computing sizes for the full set of cells as a binary search would.
             // The overall complexity for this approach is O(log n).
@@ -65,9 +71,10 @@ export default class RowPositionManager {
     _binarySearch(high, low, offset) {
         while (low <= high) {
             const middle = low + Math.floor((high - low) / 2);
+            console.log("middle: ", middle);
             const currentOffset = this._getRowOffset(middle);
 
-            if (currentOffset === offset) {
+            if (offset <= currentOffset + this._rowHeight && offset >= currentOffset - this._rowHeight) {
                 return middle;
             } else if (currentOffset < offset) {
                 low = middle + 1;
@@ -100,8 +107,7 @@ export default class RowPositionManager {
 
     _getRowOffset(index) {
         this._lastIndex = index;
-        const lastOffset = this._getLastOffset() + this._rowHeight;
-        console.log(`_lastIndex: ${this._lastIndex} - offset: ${lastOffset}`);
+        const lastOffset = this._getLastOffset();
 
         return lastOffset;
     }
