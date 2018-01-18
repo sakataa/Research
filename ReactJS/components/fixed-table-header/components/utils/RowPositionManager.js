@@ -10,11 +10,11 @@ export default class RowPositionManager {
     }
 
     getVisibleRange(containerHeight, offset, scrollDirection) {
-        console.log("index by scrolltop: ", Math.ceil(offset / this._rowHeight))
-        console.log("scrollTop: ", offset);
+        //console.log("index by scrolltop: ", Math.ceil(offset / this._rowHeight))
+        //console.log("scrollTop: ", offset);
         const maxOffset = offset + containerHeight * 2;
-        console.log("maxOffset: ", maxOffset);
-        console.log("lastIndex: ", this._lastIndex);
+        //console.log("maxOffset: ", maxOffset);
+        //console.log("lastIndex: ", this._lastIndex);
         let start = this._findNearestIndex(offset);
 
         offset = this._getRowOffset(start);
@@ -56,7 +56,6 @@ export default class RowPositionManager {
             // If we've already measured cells within this range just use a binary search as it's faster.
             return this._binarySearch(lastIndex, 0, offset);
         } else {
-            console.log("lastOffset < offset");
             // If we haven't yet measured this high, fallback to an exponential search with an inner binary search.
             // The exponential search avoids pre-computing sizes for the full set of cells as a binary search would.
             // The overall complexity for this approach is O(log n).
@@ -71,10 +70,9 @@ export default class RowPositionManager {
     _binarySearch(high, low, offset) {
         while (low <= high) {
             const middle = low + Math.floor((high - low) / 2);
-            console.log("middle: ", middle);
             const currentOffset = this._getRowOffset(middle);
 
-            if (offset <= currentOffset + this._rowHeight && offset >= currentOffset - this._rowHeight) {
+            if (offset <= currentOffset + (this._rowHeight/2) && offset >= currentOffset - (this._rowHeight/2)) {
                 return middle;
             } else if (currentOffset < offset) {
                 low = middle + 1;

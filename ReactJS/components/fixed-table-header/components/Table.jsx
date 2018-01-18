@@ -46,7 +46,7 @@ class Table extends Component {
         this.state = {
             maxWidth: props.maxWidth,
             contentHeight: props.bodyHeight,
-            bodyData: this.props.body
+            bodyData: this._getBodyData()
         }
         this.adjustedHeight = props.adjustedHeight;
 
@@ -109,7 +109,6 @@ class Table extends Component {
 
             const scrollDirection = scrollTop > this.lastScroll ? SCROLL_DIRECTION_FORWARD : SCROLL_DIRECTION_BACKWARD;
             const range = this._rowPositionManager.getVisibleRange(this.state.contentHeight, scrollTop, scrollDirection);
-            console.log("range: ", range)
             for (let i = range.start; i < range.stop; i++) {
                 bodyData.push(this.props.body[i]);
             }
@@ -121,6 +120,11 @@ class Table extends Component {
 
     componentDidUpdate() {
         if (this.isScrolling && this.bodyWrapper.scrollTop !== this.lastScroll) {
+            const scrollTop = Math.min(
+                Math.max(0, (this.totalRow * this.rowHeight) - this.state.contentHeight + SCROLLBAR_WIDTH),
+                this.lastScroll,
+              );
+
             this.bodyWrapper.scrollTop = this.lastScroll;
         }
         this.isScrolling = false;
@@ -194,7 +198,7 @@ class Table extends Component {
     componentDidMount() {
         this._handleResize();
         window.addEventListener('resize', debounce(this._handleResize));
-        //this.bodyWrapper.addEventListener('scroll', this.handleScroll);
+        this.bodyWrapper.addEventListener('scroll', this.handleScroll);
     }
 
     componentWillUnmount() {
