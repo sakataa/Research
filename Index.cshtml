@@ -1,0 +1,102 @@
+﻿<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+            a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+            is an ideal platform for building RESTful applications on the .NET Framework.
+        </p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
+</div>
+
+<div class="row">
+    <input type="text" placeholder="UserName" id="UserName" />
+    <input type="text" placeholder="Password" id="Password" />
+    <button type="button" id="btnSubmit">Submit</button>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/aes.js"></script>
+    <script>
+        $(function () {
+            var _me = {
+                initialize: function () {
+                    _me.submit();
+                    _me.initEvent();
+                },
+                initEvent: function () {
+                    $("#btnSubmit").on("click", function () {
+                        _me.submit();
+                    });
+
+                    $("input").on("keypress", function (e) {
+                        if (e.keyCode === 13) {
+                            _me.submit();
+                        }
+                    });
+                },
+
+                submit: function () {
+                    var userName = $("#UserName").val();
+                    var password = $("#Password").val();
+
+                    var key = "1234567812345678";
+                    var iv = "0000000000000000";
+
+                    //var encrypted = _me.encrypt("1234aa", key, iv);
+
+                    //var keyCodeWords = CryptoJS.enc.Hex.parse("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
+                    //var ivCodeWords = CryptoJS.enc.Hex.parse("202122232425262728292A2B2C2D2E2F");
+                    var keyCodeWords = CryptoJS.enc.Utf8.parse("7061737323313233");
+                    var ivCodeWords = CryptoJS.enc.Utf8.parse("7061737323313233");
+
+                    var encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse("1234aa"), keyCodeWords, {
+                        iv: ivCodeWords
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/Test",
+                        data: { password: encrypted.ciphertext.toString() },
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (response) {
+                            console.log(response);
+                        }
+                    });
+                },
+
+                encrypt: function (plainText, key, iv) {
+                    plainText = CryptoJS.enc.Utf8.parse(plainText);
+                    key = CryptoJS.enc.Utf8.parse(key);
+                    iv = CryptoJS.enc.Utf8.parse(iv);
+
+                    var aes = CryptoJS.algo.AES.createEncryptor(key, {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    var encrypted = aes.finalize(plainText);
+                    return CryptoJS.enc.Base64.stringify(encrypted);
+                }
+            };
+
+            _me.initialize();
+        })
+    </script>
+}
