@@ -44,3 +44,4 @@ _ReSharper*/
 
 # Office Temp Files
 ~$*
+/ReactJS/components/fixed-table-header/package-lock.json
