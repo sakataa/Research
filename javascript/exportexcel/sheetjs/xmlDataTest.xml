@@ -1,0 +1,130 @@
+<TransList>
+  <Transaction 
+  site="5" 
+  currencyType="22" 
+  eventType="4" 
+  eventTypeName="CRICKET" 
+  eventName="Sri Lanka U19 v Pakistan U19" 
+  eventId="28551935" 
+  marketName="Match Odds" 
+  marketId="1.139055836" 
+  selectionName="Sri Lanka U19" 
+  selectionID="1210408" 
+  matchType="Lay" 
+  betId="5005851" 
+  betPlaced="1/18/2018 10:40:27 PM" 
+  ip="202.78.231.39" 
+  matchOddsReq="8.2" 
+  matchAmount="0" 
+  unMatchAmount="0" 
+  reduction="0" 
+  userId="uat0000004710629" 
+  extension1="4200800" 
+  matchStake="14.999999999648" 
+  matchAvgOdds="7.57" 
+  profitLoss="14.999999999648" 
+  dateMatched="" 
+  betstatus="Settled">
+    <TransactionDetail 
+	betId="5005851" 
+	betTaken="1/18/2018 10:40:29 PM" 
+	txStake="2.84017971752" 
+	txOddsMatched="6.6" 
+	actualOdds="6.6" />
+    <TransactionDetail 
+	betId="5005851" 
+	betTaken="1/18/2018 10:40:29 PM" 
+	txStake="12.159820282128" 
+	txOddsMatched="7.8" 
+	actualOdds="7.8" />
+  </Transaction>
+
+  <Transaction 
+  site="5" 
+  currencyType="22" 
+  eventType="4" 
+  eventTypeName="CRICKET" 
+  eventName="Sri Lanka U19 v Pakistan U19" 
+  eventId="28551935" 
+  marketName="Match Odds" 
+  marketId="1.139055836" 
+  selectionName="Sri Lanka U19" 
+  selectionID="1210408" 
+  matchType="Back" 
+  betId="5005751" 
+  betPlaced="1/18/2018 10:39:16 PM" 
+  ip="202.78.231.39" 
+  matchOddsReq="6" 
+  matchAmount="0" 
+  unMatchAmount="0" 
+  reduction="0" 
+  userId="uat0000004710629" 
+  extension1="4200800" 
+  matchStake="9.999999999964" 
+  matchAvgOdds="6" 
+  profitLoss="-9.999999999964" 
+  dateMatched="" 
+  betstatus="Settled">
+    <TransactionDetail betId="5005751" betTaken="1/18/2018 10:39:18 PM" txStake="1.193455245424" txOddsMatched="6" actualOdds="6" />
+    <TransactionDetail betId="5005751" betTaken="1/18/2018 10:39:18 PM" txStake="4.562078922024" txOddsMatched="6" actualOdds="6" />
+    <TransactionDetail betId="5005751" betTaken="1/18/2018 10:39:18 PM" txStake="0.952839268524" txOddsMatched="6" actualOdds="6" />
+    <TransactionDetail betId="5005751" betTaken="1/18/2018 10:39:19 PM" txStake="3.291626563992" txOddsMatched="6" actualOdds="6" />
+  </Transaction>
+
+  <Transaction 
+  site="5" 
+  currencyType="22" 
+  eventType="4" 
+  eventTypeName="CRICKET" 
+  eventName="Sri Lanka U19 v Pakistan U19" 
+  eventId="28551935" 
+  marketName="Match Odds" 
+  marketId="1.139055836" 
+  selectionName="Sri Lanka U19" 
+  selectionID="1210408" 
+  matchType="Back" 
+  betId="5005660" 
+  betPlaced="1/18/2018 10:38:17 PM" 
+  ip="202.78.231.39" 
+  matchOddsReq="6" 
+  matchAmount="0" 
+  unMatchAmount="0" 
+  reduction="0" 
+  userId="uat0000004710629" 
+  extension1="4200800" 
+  matchStake="9.999999999964" 
+  matchAvgOdds="6" 
+  profitLoss="-9.999999999964" 
+  dateMatched="" 
+  betstatus="Settled">
+    <TransactionDetail betId="5005660" betTaken="1/18/2018 10:38:19 PM" txStake="9.999999999964" txOddsMatched="6" actualOdds="6" />
+  </Transaction>
+</TransList>
+
+
+<TransList>
+  <Transaction 
+  userId="uat0000004710629" 
+  agentId="testpsponuus" 
+  eventTypeName="CRICKET" 
+  eventName="Sri Lanka U19 v Pakistan U19" 
+  eventId="28551935" 
+  marketName="Match Odds" 
+  marketId="1.139055836" 
+  startTime="1/18/2018 5:30:00 PM" 
+  settledDate="1/19/2018 12:27:22 AM" 
+  profitLoss="-5" 
+  marketTotal="-5.00000000028" 
+  commission="0" 
+  agentCommission="0" 
+  stakeTotal="34.999999999576" 
+  resettledDate="1/21/2018 11:37:54 PM">
+    <TransactionDetail betId="5005851" selectionName="Sri Lanka U19" txOddsMatched="7.8" txStake="12.159820282128" placed="1/18/2018 10:40:29 PM" txLiability="12.159820282128" />
+    <TransactionDetail betId="5005851" selectionName="Sri Lanka U19" txOddsMatched="6.6" txStake="2.84017971752" placed="1/18/2018 10:40:29 PM" txLiability="2.84017971752" />
+    <TransactionDetail betId="5005751" selectionName="Sri Lanka U19" txOddsMatched="6" txStake="3.291626563992" placed="1/18/2018 10:39:19 PM" txLiability="-3.291626563992" />
+    <TransactionDetail betId="5005751" selectionName="Sri Lanka U19" txOddsMatched="6" txStake="0.952839268524" placed="1/18/2018 10:39:18 PM" txLiability="-0.952839268524" />
+    <TransactionDetail betId="5005751" selectionName="Sri Lanka U19" txOddsMatched="6" txStake="4.562078922024" placed="1/18/2018 10:39:18 PM" txLiability="-4.562078922024" />
+    <TransactionDetail betId="5005751" selectionName="Sri Lanka U19" txOddsMatched="6" txStake="1.193455245424" placed="1/18/2018 10:39:18 PM" txLiability="-1.193455245424" />
+    <TransactionDetail betId="5005660" selectionName="Sri Lanka U19" txOddsMatched="6" txStake="9.999999999964" placed="1/18/2018 10:38:19 PM" txLiability="-9.999999999964" />
+  </Transaction>
+</TransList>

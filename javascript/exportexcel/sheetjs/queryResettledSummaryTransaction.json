@@ -1,0 +1,38 @@
+{
+    "status": "1",
+    "currentPage": 1,
+    "totalPage": 1,
+    "resultList": [{
+        "userId": "apitestpl2",
+        "agentId": "eurapima",
+        "eventTypeName": "CRICKET",
+        "eventName": "West Indies A v Sri Lanka A",
+        "eventId": 28434773,
+        "marketName": "Match Odds",
+        "marketId": "1.135632326",
+        "startTime": "2017-10-19 19:30:00",
+        "settledDate": "2017-10-22 09:02:18",
+        "resettledDate": "2017-10-25 13:05:29",
+        "profitLoss": 0,
+        "marketTotal": 0,
+        "commission": 0,
+        "agentCommission": 0,
+        "netTotal": 0,
+        "stakeTotal": 0,
+        "transactionData": [{
+            "betId": 43080,
+            "selectionName": "West Indies A",
+            "txOddsMatched": 1.72,
+            "txStake": 2,
+            "matchType": "Back",
+            "placed": "2017-10-20 11:35:21",
+            "txLiability": 0
+        }],
+        "backSubTotal": 0,
+        "laySubTotal": 0
+    }],
+    "sportList": [
+        { "key": 4, "name": "CRICKET", "sum": 0 }
+    ],
+    "totalPL": 0
+}
