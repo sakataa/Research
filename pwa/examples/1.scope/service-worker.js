@@ -1,6 +1,6 @@
 var cacheName = 'cache-v1';
 var filesToCache = [
-  '/images/IMG_1.JPG',
+  '/images/IMG_4.JPG',
 ];
 
 self.addEventListener('install', function (event) {
